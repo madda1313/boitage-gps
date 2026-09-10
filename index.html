@@ -1,1580 +1,219 @@
 <!DOCTYPE html>
-
 <html lang="fr">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
->
-
-<meta
-  name="apple-mobile-web-app-capable"
-  content="yes"
->
-
-<title>Boîtage GPS</title>
-
-
-<style>
-
-body {
-
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    sans-serif;
-
-  margin: 0;
-
-  background:
-    #f2f2f7;
-
-  text-align:
-    center;
-
-}
-
-
-.container {
-
-  padding:
-    20px;
-
-  max-width:
-    500px;
-
-  margin:
-    auto;
-
-}
-
-
-h1 {
-
-  font-size:
-    28px;
-
-  margin:
-    25px 0 5px;
-
-}
-
-
-#status {
-
-  font-size:
-    16px;
-
-  color:
-    #666;
-
-  margin-bottom:
-    20px;
-
-  min-height:
-    22px;
-
-}
-
-
-.rue {
-
-  background:
-    white;
-
-  padding:
-    25px 15px;
-
-  border-radius:
-    18px;
-
-  font-size:
-    25px;
-
-  font-weight:
-    700;
-
-  min-height:
-    65px;
-
-  display:
-    flex;
-
-  align-items:
-    center;
-
-  justify-content:
-    center;
-
-  box-shadow:
-    0 2px 10px rgba(0,0,0,.08);
-
-}
-
-
-.bal {
-
-  font-size:
-    76px;
-
-  font-weight:
-    800;
-
-  margin:
-    25px 0 0;
-
-}
-
-
-.label {
-
-  color:
-    #555;
-
-  font-size:
-    20px;
-
-  margin-bottom:
-    25px;
-
-}
-
-
-.buttons {
-
-  display:
-    grid;
-
-  grid-template-columns:
-    1fr 1fr 1fr;
-
-  gap:
-    10px;
-
-}
-
-
-button {
-
-  border:
-    0;
-
-  border-radius:
-    17px;
-
-  padding:
-    22px 5px;
-
-  font-size:
-    24px;
-
-  font-weight:
-    700;
-
-  touch-action:
-    manipulation;
-
-}
-
-
-button:active {
-
-  transform:
-    scale(.96);
-
-}
-
-
-.minus {
-
-  background:
-    #e5e5ea;
-
-  color:
-    #007aff;
-
-}
-
-
-.plus {
-
-  background:
-    #cfe6ff;
-
-  color:
-    #007aff;
-
-}
-
-
-.plus5 {
-
-  background:
-    #add7ff;
-
-  color:
-    #007aff;
-
-}
-
-
-.street {
-
-  width:
-    100%;
-
-  margin-top:
-    15px;
-
-  background:
-    #ff9500;
-
-  color:
-    white;
-
-  font-size:
-    18px;
-
-}
-
-
-.sync {
-
-  background:
-    white;
-
-  margin-top:
-    18px;
-
-  padding:
-    14px;
-
-  border-radius:
-    14px;
-
-  font-size:
-    15px;
-
-}
-
-
-.debug {
-
-  margin-top:
-    15px;
-
-  color:
-    #777;
-
-  font-size:
-    12px;
-
-  line-height:
-    1.5;
-
-  white-space:
-    pre-line;
-
-}
-
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Test API Boîtage</title>
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f2f2f7;
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    .card {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      border-radius: 18px;
+      padding: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.08);
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 16px;
+      padding: 18px;
+      font-size: 20px;
+      font-weight: 700;
+      background: #007aff;
+      color: white;
+    }
+
+    #resultat {
+      margin-top: 20px;
+      text-align: left;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: monospace;
+      font-size: 14px;
+      background: #f2f2f7;
+      padding: 15px;
+      border-radius: 12px;
+      min-height: 100px;
+    }
+  </style>
 </head>
-
 
 <body>
 
+<div class="card">
 
-<div class="container">
+  <h1>📬 Test Google Sheet</h1>
 
+  <button id="testBtn">
+    Tester Google Sheet
+  </button>
 
-<h1>
-📬 Boîtage GPS
-</h1>
-
-
-<div id="status">
-Initialisation GPS…
-</div>
-
-
-<div
-  id="rue"
-  class="rue"
->
-Recherche de la rue…
-</div>
-
-
-<div
-  id="bal"
-  class="bal"
->
-0
-</div>
-
-
-<div class="label">
-boîtes aux lettres
-</div>
-
-
-<div class="buttons">
-
-
-<button
-  id="moins1"
-  class="minus"
->
-−1
-</button>
-
-
-<button
-  id="plus1"
-  class="plus"
->
-+1
-</button>
-
-
-<button
-  id="plus5"
-  class="plus5"
->
-+5
-</button>
-
+  <div id="resultat">
+    En attente du test…
+  </div>
 
 </div>
-
-
-<button
-  id="choisirRue"
-  class="street"
->
-✏️ Choisir la rue manuellement
-</button>
-
-
-<div
-  id="sync"
-  class="sync"
->
-☁️ Application prête
-</div>
-
-
-<div
-  id="debug"
-  class="debug"
->
-</div>
-
-
-</div>
-
 
 
 <script>
-
-
-/* =======================================
-   CONFIGURATION
-======================================= */
-
 
 const API_URL =
 'https://script.google.com/macros/s/AKfycbxhbYmORw_HilfITh6G58wLQ5P89PptlcVcMZm0ur0NJCl0fOp7B7d9f6yvDGhvfdL_BA/exec';
 
 
+function jsonp(params) {
 
-const RUES_TEST = [
+  return new Promise(function(resolve, reject) {
 
-  'Chemin Marius Milon',
+    const callbackName =
+      'callback_' +
+      Date.now() +
+      '_' +
+      Math.floor(Math.random() * 100000);
 
-  'Chemin des Mille Écus',
+    const script =
+      document.createElement('script');
 
-  'Boulevard Marcel Delestrade'
+    const timeout =
+      setTimeout(function() {
 
-];
+        nettoyage();
 
-
-
-/* =======================================
-   VARIABLES
-======================================= */
-
-
-let rueActive =
-  '';
-
-
-let compteurs =
-  {};
-
-
-try {
-
-  compteurs =
-    JSON.parse(
-      localStorage.getItem(
-        'compteursBoitage'
-      ) || '{}'
-    );
-
-}
-
-catch(e) {
-
-  compteurs =
-    {};
-
-}
-
-
-
-/* =======================================
-   AFFICHAGE
-======================================= */
-
-
-function setStatus(
-  texte
-) {
-
-  document
-    .getElementById(
-      'status'
-    )
-    .textContent =
-      texte;
-
-}
-
-
-
-function setSync(
-  texte
-) {
-
-  document
-    .getElementById(
-      'sync'
-    )
-    .textContent =
-      texte;
-
-}
-
-
-
-function sauvegarderLocal() {
-
-  localStorage.setItem(
-
-    'compteursBoitage',
-
-    JSON.stringify(
-      compteurs
-    )
-
-  );
-
-}
-
-
-
-function afficherCompteur() {
-
-  document
-    .getElementById(
-      'bal'
-    )
-    .textContent =
-
-      rueActive
-
-      ? Number(
-          compteurs[
-            rueActive
-          ]
-        ) || 0
-
-      : 0;
-
-}
-
-
-
-/* =======================================
-   JSONP
-======================================= */
-
-
-function jsonp(
-  params
-) {
-
-  return new Promise(
-    function(
-      resolve,
-      reject
-    ) {
-
-
-      const callbackName =
-        'jsonp_' +
-        Date.now() +
-        '_' +
-        Math.floor(
-          Math.random() *
-          100000
+        reject(
+          new Error('Timeout API')
         );
 
-
-      const script =
-        document.createElement(
-          'script'
-        );
+      }, 15000);
 
 
-      const timeout =
-        setTimeout(
-          function() {
+    function nettoyage() {
 
-            nettoyage();
+      clearTimeout(timeout);
 
-            reject(
-              new Error(
-                'Délai API dépassé'
-              )
-            );
+      try {
+        delete window[callbackName];
+      } catch(e) {}
 
-          },
-          15000
-        );
-
-
-      function nettoyage() {
-
-        clearTimeout(
-          timeout
-        );
-
-
-        try {
-
-          delete window[
-            callbackName
-          ];
-
-        }
-
-        catch(e) {}
-
-
-        if (
-          script.parentNode
-        ) {
-
-          script.parentNode
-            .removeChild(
-              script
-            );
-
-        }
-
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
       }
-
-
-      window[
-        callbackName
-      ] =
-        function(
-          data
-        ) {
-
-          nettoyage();
-
-          resolve(
-            data
-          );
-
-        };
-
-
-      params.callback =
-        callbackName;
-
-
-      params.t =
-        Date.now();
-
-
-      const query =
-        Object.keys(
-          params
-        )
-        .map(
-          function(
-            key
-          ) {
-
-            return (
-
-              encodeURIComponent(
-                key
-              )
-
-              +
-
-              '='
-
-              +
-
-              encodeURIComponent(
-                params[
-                  key
-                ]
-              )
-
-            );
-
-          }
-        )
-        .join(
-          '&'
-        );
-
-
-      script.src =
-
-        API_URL +
-
-        '?' +
-
-        query;
-
-
-      script.onerror =
-        function() {
-
-          nettoyage();
-
-          reject(
-            new Error(
-              'Erreur de chargement API'
-            )
-          );
-
-        };
-
-
-      document.body
-        .appendChild(
-          script
-        );
-
     }
-  );
 
+
+    window[callbackName] =
+      function(data) {
+
+        nettoyage();
+        resolve(data);
+
+      };
+
+
+    params.callback =
+      callbackName;
+
+    params.t =
+      Date.now();
+
+
+    const query =
+      Object.keys(params)
+        .map(function(key) {
+
+          return (
+            encodeURIComponent(key) +
+            '=' +
+            encodeURIComponent(params[key])
+          );
+
+        })
+        .join('&');
+
+
+    script.src =
+      API_URL +
+      '?' +
+      query;
+
+
+    script.onerror =
+      function() {
+
+        nettoyage();
+
+        reject(
+          new Error('Erreur chargement script JSONP')
+        );
+
+      };
+
+
+    document.body.appendChild(script);
+
+  });
 }
 
 
+async function lancerTest() {
 
-/* =======================================
-   LECTURE DU COMPTEUR
-======================================= */
+  const zone =
+    document.getElementById('resultat');
 
-
-async function recupererCompteur(
-  rue
-) {
-
-
-  setSync(
-    '☁️ Récupération du compteur…'
-  );
-
+  zone.textContent =
+    'Test en cours…';
 
   try {
-
 
     const data =
       await jsonp({
 
-        action:
-          'getRue',
+        action: 'getRue',
 
         rue:
-          rue
+          'Boulevard Marcel Delestrade'
 
       });
 
 
-    if (
-      data &&
-      data.ok
-    ) {
-
-
-      compteurs[
-        rue
-      ] =
-
-        Number(
-          data.bal
-        ) || 0;
-
-
-      sauvegarderLocal();
-
-
-      afficherCompteur();
-
-
-      setSync(
-        '☁️ Google Sheet synchronisé ✓'
-      );
-
-
-    }
-
-
-    else {
-
-
-      setSync(
-        '⚠️ Rue absente du Google Sheet'
-      );
-
-
-    }
-
-
-  }
-
-
-  catch(error) {
-
-
-    console.error(
-      error
-    );
-
-
-    setSync(
-      '⚠️ Impossible de lire le Google Sheet'
-    );
-
-
-  }
-
-}
-
-
-
-/* =======================================
-   ACTIVATION RUE
-======================================= */
-
-
-async function activerRue(
-  rue
-) {
-
-
-  if (
-    !rue
-  ) {
-
-    return;
-
-  }
-
-
-  if (
-    rueActive === rue
-  ) {
-
-    return;
-
-  }
-
-
-  rueActive =
-    rue;
-
-
-  document
-    .getElementById(
-      'rue'
-    )
-    .textContent =
-
-      '📍 ' +
-
-      rueActive;
-
-
-  if (
-    compteurs[
-      rueActive
-    ] === undefined
-  ) {
-
-    compteurs[
-      rueActive
-    ] = 0;
-
-  }
-
-
-  afficherCompteur();
-
-
-  await recupererCompteur(
-    rueActive
-  );
-
-}
-
-
-
-/* =======================================
-   MODIFICATION BAL
-======================================= */
-
-
-async function modifier(
-  nombre
-) {
-
-
-  if (
-    !rueActive
-  ) {
-
-
-    alert(
-      'Aucune rue active.'
-    );
-
-
-    return;
-
-  }
-
-
-  let valeur =
-
-    Number(
-      compteurs[
-        rueActive
-      ]
-    ) || 0;
-
-
-  valeur +=
-    nombre;
-
-
-  if (
-    valeur < 0
-  ) {
-
-    valeur = 0;
-
-  }
-
-
-  compteurs[
-    rueActive
-  ] =
-    valeur;
-
-
-  sauvegarderLocal();
-
-
-  afficherCompteur();
-
-
-  setSync(
-    '☁️ Synchronisation…'
-  );
-
-
-  try {
-
-
-    const data =
-      await jsonp({
-
-
-        action:
-          'updateBAL',
-
-
-        rue:
-          rueActive,
-
-
-        bal:
-          valeur,
-
-
-        type:
-
-          nombre > 0
-
-          ? '+' + nombre
-
-          : String(
-              nombre
-            )
-
-
-      });
-
-
-    if (
-      data &&
-      data.ok
-    ) {
-
-
-      setSync(
-        '☁️ Google Sheet synchronisé ✓'
-      );
-
-
-    }
-
-
-    else {
-
-
-      throw new Error(
-        'Erreur API'
-      );
-
-
-    }
-
-
-  }
-
-
-  catch(error) {
-
-
-    console.error(
-      error
-    );
-
-
-    setSync(
-      '⚠️ Sauvegardé sur iPhone - Sheet non synchronisé'
-    );
-
-
-  }
-
-}
-
-
-
-/* =======================================
-   CHOIX MANUEL
-======================================= */
-
-
-function choisirRueManuellement() {
-
-
-  const choix =
-    prompt(
-
-      'Choisis une rue :\n\n' +
-
-      '1 = Chemin Marius Milon\n' +
-
-      '2 = Chemin des Mille Écus\n' +
-
-      '3 = Boulevard Marcel Delestrade\n\n' +
-
-      'Tape 1, 2 ou 3.'
-
-    );
-
-
-  if (
-    choix === null
-  ) {
-
-    return;
-
-  }
-
-
-  const valeur =
-    String(
-      choix
-    ).trim();
-
-
-  if (
-    valeur === '1'
-  ) {
-
-
-    activerRue(
-      RUES_TEST[
-        0
-      ]
-    );
-
-
-  }
-
-
-  else if (
-    valeur === '2'
-  ) {
-
-
-    activerRue(
-      RUES_TEST[
-        1
-      ]
-    );
-
-
-  }
-
-
-  else if (
-    valeur === '3'
-  ) {
-
-
-    activerRue(
-      RUES_TEST[
+    zone.textContent =
+      'SUCCÈS ✅\n\n' +
+      JSON.stringify(
+        data,
+        null,
         2
-      ]
-    );
-
-
-  }
-
-
-  else {
-
-
-    alert(
-      'Tape 1, 2 ou 3.'
-    );
-
-
-  }
-
-}
-
-
-
-/* =======================================
-   NORMALISATION
-======================================= */
-
-
-function normaliser(
-  texte
-) {
-
-
-  return String(
-    texte || ''
-  )
-
-    .toLowerCase()
-
-    .normalize(
-      'NFD'
-    )
-
-    .replace(
-      /[\u0300-\u036f]/g,
-      ''
-    )
-
-    .replace(
-      /[’']/g,
-      ' '
-    )
-
-    .replace(
-      /\s+/g,
-      ' '
-    )
-
-    .trim();
-
-}
-
-
-
-/* =======================================
-   IDENTIFIER RUE
-======================================= */
-
-
-function identifierRue(
-  rueGPS
-) {
-
-
-  const gps =
-    normaliser(
-      rueGPS
-    );
-
-
-  if (
-    !gps
-  ) {
-
-    return '';
-
-  }
-
-
-  for (
-    const rue of RUES_TEST
-  ) {
-
-
-    const test =
-      normaliser(
-        rue
       );
 
-
-    if (
-
-      gps === test
-
-      ||
-
-      gps.includes(
-        test
-      )
-
-      ||
-
-      test.includes(
-        gps
-      )
-
-    ) {
-
-
-      return rue;
-
-
-    }
-
   }
-
-
-  return '';
-
-}
-
-
-
-/* =======================================
-   REVERSE GEOCODING
-======================================= */
-
-
-async function reverseGeocode(
-  lat,
-  lng
-) {
-
-
-  try {
-
-
-    const url =
-
-      'https://nominatim.openstreetmap.org/reverse'
-
-      +
-
-      '?format=jsonv2'
-
-      +
-
-      '&lat=' +
-      encodeURIComponent(
-        lat
-      )
-
-      +
-
-      '&lon=' +
-      encodeURIComponent(
-        lng
-      )
-
-      +
-
-      '&zoom=18'
-
-      +
-
-      '&addressdetails=1';
-
-
-    const response =
-      await fetch(
-        url
-      );
-
-
-    const data =
-      await response.json();
-
-
-    const adresse =
-      data.address || {};
-
-
-    const rue =
-
-      adresse.road
-
-      ||
-
-      adresse.pedestrian
-
-      ||
-
-      adresse.residential
-
-      ||
-
-      adresse.path
-
-      ||
-
-      adresse.footway
-
-      ||
-
-      '';
-
-
-    return {
-
-      rue:
-        rue
-
-    };
-
-
-  }
-
 
   catch(error) {
 
-
-    return {
-
-      rue:
-        ''
-
-    };
-
+    zone.textContent =
+      'ERREUR ❌\n\n' +
+      error.message;
 
   }
 
 }
 
 
-
-/* =======================================
-   GPS
-======================================= */
-
-
-async function positionTrouvee(
-  position
-) {
-
-
-  const lat =
-    position.coords.latitude;
-
-
-  const lng =
-    position.coords.longitude;
-
-
-  const precision =
-    Math.round(
-      position.coords.accuracy
-    );
-
-
-  setStatus(
-
-    'GPS actif — précision ±'
-
-    +
-
-    precision
-
-    +
-
-    ' m'
-
-  );
-
-
-  const resultat =
-    await reverseGeocode(
-      lat,
-      lng
-    );
-
-
-  document
-    .getElementById(
-      'debug'
-    )
-    .textContent =
-
-      'GPS : '
-
-      +
-
-      lat.toFixed(
-        6
-      )
-
-      +
-
-      ', '
-
-      +
-
-      lng.toFixed(
-        6
-      )
-
-      +
-
-      '\nRue GPS : '
-
-      +
-
-      (
-        resultat.rue
-        ||
-        'inconnue'
-      );
-
-
-  const rueTrouvee =
-    identifierRue(
-      resultat.rue
-    );
-
-
-  if (
-    rueTrouvee
-  ) {
-
-
-    await activerRue(
-      rueTrouvee
-    );
-
-
-  }
-
-
-  else if (
-    !rueActive
-  ) {
-
-
-    document
-      .getElementById(
-        'rue'
-      )
-      .textContent =
-
-        '📍 Hors rue de test';
-
-
-  }
-
-}
-
-
-
-/* =======================================
-   ERREUR GPS
-======================================= */
-
-
-function erreurGPS(
-  error
-) {
-
-
-  setStatus(
-
-    'Erreur GPS : '
-
-    +
-
-    error.message
-
-  );
-
-}
-
-
-
-/* =======================================
-   BOUTONS
-======================================= */
-
-
 document
-  .getElementById(
-    'moins1'
-  )
+  .getElementById('testBtn')
   .addEventListener(
     'click',
-    function() {
-
-      modifier(
-        -1
-      );
-
-    }
+    lancerTest
   );
-
-
-document
-  .getElementById(
-    'plus1'
-  )
-  .addEventListener(
-    'click',
-    function() {
-
-      modifier(
-        1
-      );
-
-    }
-  );
-
-
-document
-  .getElementById(
-    'plus5'
-  )
-  .addEventListener(
-    'click',
-    function() {
-
-      modifier(
-        5
-      );
-
-    }
-  );
-
-
-document
-  .getElementById(
-    'choisirRue'
-  )
-  .addEventListener(
-    'click',
-    choisirRueManuellement
-  );
-
-
-
-/* =======================================
-   DÉMARRAGE GPS
-======================================= */
-
-
-if (
-  'geolocation' in navigator
-) {
-
-
-  navigator
-    .geolocation
-    .watchPosition(
-
-
-      positionTrouvee,
-
-
-      erreurGPS,
-
-
-      {
-
-        enableHighAccuracy:
-          true,
-
-        maximumAge:
-          2000,
-
-        timeout:
-          15000
-
-      }
-
-
-    );
-
-
-}
-
-
-else {
-
-
-  setStatus(
-    'GPS non disponible'
-  );
-
-
-}
-
 
 </script>
 
-
 </body>
-
 </html>
