@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+  >
+
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
   <title>Boîtage GPS</title>
 
   <style>
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       margin: 0;
@@ -28,6 +37,7 @@
       font-size: 14px;
       margin-bottom: 20px;
       color: #666;
+      min-height: 20px;
     }
 
     .rue {
@@ -37,9 +47,11 @@
       font-size: 25px;
       font-weight: 700;
       min-height: 60px;
+
       display: flex;
       justify-content: center;
       align-items: center;
+
       box-shadow: 0 2px 10px rgba(0,0,0,.08);
     }
 
@@ -67,6 +79,11 @@
       padding: 22px 5px;
       font-size: 24px;
       font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:active {
+      transform: scale(.97);
     }
 
     .minus {
@@ -89,14 +106,25 @@
       font-size: 18px;
     }
 
-    .debug {
+    .sync {
       margin-top: 20px;
+      padding: 10px;
+      border-radius: 12px;
+      background: white;
+      font-size: 14px;
+    }
+
+    .debug {
+      margin-top: 15px;
       font-size: 12px;
       color: #777;
       line-height: 1.5;
+      white-space: pre-line;
     }
+
   </style>
 </head>
+
 
 <body>
 
@@ -108,226 +136,805 @@
     Initialisation GPS…
   </div>
 
+
   <div class="rue" id="rue">
     Recherche de la rue…
   </div>
 
-  <div class="bal" id="bal">0</div>
+
+  <div class="bal" id="bal">
+    0
+  </div>
 
   <div class="label">
     boîtes aux lettres
   </div>
 
+
   <div class="buttons">
 
-    <button class="minus" onclick="modifier(-1)">
+    <button
+      class="minus"
+      onclick="modifier(-1)"
+    >
       −1
     </button>
 
-    <button class="plus" onclick="modifier(1)">
+
+    <button
+      class="plus"
+      onclick="modifier(1)"
+    >
       +1
     </button>
 
-    <button class="plus5" onclick="modifier(5)">
+
+    <button
+      class="plus5"
+      onclick="modifier(5)"
+    >
       +5
     </button>
 
   </div>
 
-  <button class="street" onclick="choisirRue()">
+
+  <button
+    class="street"
+    onclick="choisirRue()"
+  >
     ✏️ Choisir la rue manuellement
   </button>
 
-  <div class="debug" id="debug"></div>
+
+  <div
+    class="sync"
+    id="sync"
+  >
+    ☁️ En attente de synchronisation
+  </div>
+
+
+  <div
+    class="debug"
+    id="debug"
+  >
+  </div>
 
 </div>
 
+
+
 <script>
 
+/* ==========================================================
+   GOOGLE SHEET
+   ========================================================== */
+
+
+/*
+  IMPORTANT :
+
+  Remplace uniquement le texte entre les apostrophes
+  ci-dessous par ton URL Apps Script.
+
+  Elle doit terminer par :
+
+  /exec
+*/
+
+const API_URL =
+  https://script.google.com/macros/s/AKfycbxhbYmORw_HilfITh6G58wLQ5P89PptlcVcMZm0ur0NJCl0fOp7B7d9f6yvDGhvfdL_BA/exec;
+
+
+
+/* ==========================================================
+   RUES DU PROTOTYPE
+   ========================================================== */
+
 const RUES_TEST = [
+
   'Chemin Marius Milon',
+
   'Chemin des Mille Écus',
+
   'Boulevard Marcel Delestrade'
+
 ];
 
-let rueActive = '';
-let compteurs = JSON.parse(localStorage.getItem('compteursBoitage') || '{}');
 
-function sauvegarder() {
-  localStorage.setItem('compteursBoitage', JSON.stringify(compteurs));
+
+/* ==========================================================
+   VARIABLES
+   ========================================================== */
+
+let rueActive = '';
+
+let compteurs =
+  JSON.parse(
+    localStorage.getItem('compteursBoitage') || '{}'
+  );
+
+let chargementRue = false;
+
+
+
+/* ==========================================================
+   STOCKAGE LOCAL
+   ========================================================== */
+
+function sauvegarderLocal() {
+
+  localStorage.setItem(
+    'compteursBoitage',
+    JSON.stringify(compteurs)
+  );
+
 }
+
+
 
 function afficherCompteur() {
+
+  let bal = 0;
+
+  if (rueActive) {
+
+    bal =
+      Number(compteurs[rueActive]) || 0;
+
+  }
+
   document.getElementById('bal').innerText =
-    rueActive ? (compteurs[rueActive] || 0) : 0;
+    bal;
+
 }
 
-function modifier(nombre) {
-  if (!rueActive) {
-    alert("Choisis d'abord une rue.");
+
+
+/* ==========================================================
+   SYNCHRONISATION GOOGLE SHEET
+   ========================================================== */
+
+async function recupererCompteur(rue) {
+
+  document.getElementById('sync').innerText =
+    '☁️ Récupération du compteur…';
+
+  try {
+
+    const url =
+      API_URL +
+      '?action=getRue&rue=' +
+      encodeURIComponent(rue) +
+      '&t=' +
+      Date.now();
+
+
+    const response =
+      await fetch(url);
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        'HTTP ' + response.status
+      );
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    if (data.ok) {
+
+      compteurs[rue] =
+        Number(data.bal) || 0;
+
+      sauvegarderLocal();
+
+      afficherCompteur();
+
+
+      document.getElementById('sync').innerText =
+        '☁️ Google Sheet synchronisé ✓';
+
+    }
+
+    else {
+
+      document.getElementById('sync').innerText =
+        '⚠️ Rue absente du Google Sheet';
+
+    }
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+
+    document.getElementById('sync').innerText =
+      '⚠️ Impossible de lire le Google Sheet';
+
+  }
+
+}
+
+
+
+/* ==========================================================
+   ACTIVATION D'UNE RUE
+   ========================================================== */
+
+async function activerRue(rue) {
+
+  if (!rue) {
+
     return;
+
   }
 
-  if (compteurs[rueActive] === undefined) {
-    compteurs[rueActive] = 0;
+
+  /*
+    Si nous sommes déjà sur cette rue,
+    inutile de recharger le compteur
+    toutes les quelques secondes.
+  */
+
+  if (rueActive === rue) {
+
+    return;
+
   }
 
-  compteurs[rueActive] += nombre;
 
-  if (compteurs[rueActive] < 0) {
-    compteurs[rueActive] = 0;
-  }
-
-  sauvegarder();
-  afficherCompteur();
-}
-
-function activerRue(rue) {
   rueActive = rue;
 
-  if (compteurs[rueActive] === undefined) {
-    compteurs[rueActive] = 0;
-  }
-
-  sauvegarder();
 
   document.getElementById('rue').innerText =
     '📍 ' + rueActive;
 
+
+  /*
+    On affiche immédiatement le compteur
+    local pendant que Google Sheet répond.
+  */
+
+  if (
+    compteurs[rueActive] === undefined
+  ) {
+
+    compteurs[rueActive] = 0;
+
+  }
+
+
   afficherCompteur();
+
+
+  /*
+    Puis on récupère la vraie valeur
+    enregistrée dans Google Sheet.
+  */
+
+  await recupererCompteur(rueActive);
+
 }
+
+
+
+/* ==========================================================
+   MODIFICATION DU NOMBRE DE BAL
+   ========================================================== */
+
+async function modifier(nombre) {
+
+  if (!rueActive) {
+
+    alert(
+      "Aucune rue détectée."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    compteurs[rueActive] === undefined
+  ) {
+
+    compteurs[rueActive] = 0;
+
+  }
+
+
+  compteurs[rueActive] += nombre;
+
+
+  if (
+    compteurs[rueActive] < 0
+  ) {
+
+    compteurs[rueActive] = 0;
+
+  }
+
+
+  sauvegarderLocal();
+
+  afficherCompteur();
+
+
+  document.getElementById('sync').innerText =
+    '☁️ Synchronisation…';
+
+
+  try {
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+
+          method: 'POST',
+
+          /*
+            text/plain évite une requête
+            CORS preflight supplémentaire
+            avec Apps Script.
+          */
+
+          headers: {
+
+            'Content-Type':
+              'text/plain;charset=utf-8'
+
+          },
+
+
+          body: JSON.stringify({
+
+            action:
+              'updateBAL',
+
+            rue:
+              rueActive,
+
+            bal:
+              compteurs[rueActive],
+
+            type:
+              nombre > 0
+                ? '+' + nombre
+                : String(nombre)
+
+          })
+
+        }
+      );
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        'HTTP ' + response.status
+      );
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    if (data.ok) {
+
+      document.getElementById('sync').innerText =
+        '☁️ Google Sheet synchronisé ✓';
+
+    }
+
+    else {
+
+      throw new Error(
+        data.message || 'Erreur API'
+      );
+
+    }
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+
+    document.getElementById('sync').innerText =
+      '⚠️ BAL sauvegardées sur iPhone - Sheet non synchronisé';
+
+  }
+
+}
+
+
+
+/* ==========================================================
+   CHOIX MANUEL POUR LES TESTS
+   ========================================================== */
 
 function choisirRue() {
-  const choix = prompt(
-    "1 = Chemin Marius Milon\n" +
-    "2 = Chemin des Mille Écus\n" +
-    "3 = Boulevard Marcel Delestrade"
-  );
 
-  if (choix === '1') activerRue(RUES_TEST[0]);
-  if (choix === '2') activerRue(RUES_TEST[1]);
-  if (choix === '3') activerRue(RUES_TEST[2]);
+  const choix =
+    prompt(
+
+      "Choisis une rue :\n\n" +
+
+      "1 = Chemin Marius Milon\n" +
+
+      "2 = Chemin des Mille Écus\n" +
+
+      "3 = Boulevard Marcel Delestrade"
+
+    );
+
+
+  if (choix === '1') {
+
+    activerRue(
+      RUES_TEST[0]
+    );
+
+  }
+
+
+  else if (choix === '2') {
+
+    activerRue(
+      RUES_TEST[1]
+    );
+
+  }
+
+
+  else if (choix === '3') {
+
+    activerRue(
+      RUES_TEST[2]
+    );
+
+  }
+
 }
 
-async function reverseGeocode(lat, lng) {
+
+
+/* ==========================================================
+   REVERSE GEOCODING
+   ========================================================== */
+
+async function reverseGeocode(
+  lat,
+  lng
+) {
+
   try {
+
     const url =
+
       'https://nominatim.openstreetmap.org/reverse' +
+
       '?format=jsonv2' +
+
       '&lat=' + lat +
+
       '&lon=' + lng +
+
       '&zoom=18' +
+
       '&addressdetails=1';
 
-    const response = await fetch(url, {
-      headers: {
-        'Accept': 'application/json'
-      }
-    });
 
-    const data = await response.json();
+    const response =
+      await fetch(
+        url,
+        {
+          headers: {
+            'Accept':
+              'application/json'
+          }
+        }
+      );
+
+
+    const data =
+      await response.json();
+
 
     const rue =
+
       data.address?.road ||
+
       data.address?.pedestrian ||
+
       data.address?.residential ||
+
       data.address?.path ||
+
       '';
 
+
     return {
-      rue,
-      display: data.display_name || ''
+
+      rue: rue,
+
+      display:
+        data.display_name || ''
+
     };
 
-  } catch (e) {
-    return {
-      rue: '',
-      display: ''
-    };
   }
+
+
+  catch (error) {
+
+    console.error(error);
+
+
+    return {
+
+      rue: '',
+
+      display: ''
+
+    };
+
+  }
+
 }
+
+
+
+/* ==========================================================
+   NORMALISATION DES NOMS
+   ========================================================== */
 
 function normaliser(texte) {
-  return texte
+
+  return String(texte || '')
+
     .toLowerCase()
+
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[’']/g, ' ')
-    .replace(/\s+/g, ' ')
+
+    .replace(
+      /[\u0300-\u036f]/g,
+      ''
+    )
+
+    .replace(
+      /[’']/g,
+      ' '
+    )
+
+    .replace(
+      /\s+/g,
+      ' '
+    )
+
     .trim();
+
 }
 
-function identifierRue(rueGPS) {
-  const gps = normaliser(rueGPS);
 
-  for (const rue of RUES_TEST) {
-    const test = normaliser(rue);
+
+/* ==========================================================
+   IDENTIFICATION DE LA RUE
+   ========================================================== */
+
+function identifierRue(
+  rueGPS
+) {
+
+  const gps =
+    normaliser(rueGPS);
+
+
+  if (!gps) {
+
+    return '';
+
+  }
+
+
+  for (
+    const rue of RUES_TEST
+  ) {
+
+    const test =
+      normaliser(rue);
+
 
     if (
+
       gps === test ||
+
       gps.includes(test) ||
+
       test.includes(gps)
+
     ) {
+
       return rue;
+
     }
+
   }
+
 
   return '';
+
 }
 
-async function positionTrouvee(position) {
 
-  const lat = position.coords.latitude;
-  const lng = position.coords.longitude;
-  const precision = Math.round(position.coords.accuracy);
+
+/* ==========================================================
+   POSITION GPS TROUVÉE
+   ========================================================== */
+
+async function positionTrouvee(
+  position
+) {
+
+  const lat =
+    position.coords.latitude;
+
+
+  const lng =
+    position.coords.longitude;
+
+
+  const precision =
+    Math.round(
+      position.coords.accuracy
+    );
+
 
   document.getElementById('status').innerText =
-    'GPS actif — précision ±' + precision + ' m';
 
-  const resultat = await reverseGeocode(lat, lng);
+    'GPS actif — précision ±' +
+
+    precision +
+
+    ' m';
+
+
+  const resultat =
+    await reverseGeocode(
+      lat,
+      lng
+    );
+
 
   document.getElementById('debug').innerText =
-    'GPS : ' +
-    lat.toFixed(6) +
-    ', ' +
-    lng.toFixed(6) +
-    '\nRue GPS : ' +
-    (resultat.rue || 'inconnue');
 
-  const rueTrouvee = identifierRue(resultat.rue);
+    'GPS : ' +
+
+    lat.toFixed(6) +
+
+    ', ' +
+
+    lng.toFixed(6) +
+
+    '\nRue GPS : ' +
+
+    (
+      resultat.rue ||
+      'inconnue'
+    );
+
+
+  const rueTrouvee =
+    identifierRue(
+      resultat.rue
+    );
+
 
   if (rueTrouvee) {
-    activerRue(rueTrouvee);
-  } else {
-    document.getElementById('rue').innerText =
-      '📍 Hors rue de test';
+
+    await activerRue(
+      rueTrouvee
+    );
+
   }
+
+  else {
+
+    /*
+      On n'efface PAS rueActive.
+
+      Comme ça, un petit écart GPS,
+      un carrefour ou une impasse
+      ne fait pas perdre le compteur.
+    */
+
+    document.getElementById('rue').innerText =
+
+      rueActive
+
+        ? '📍 ' + rueActive
+
+        : '📍 Hors rue de test';
+
+  }
+
 }
 
-function erreurGPS(error) {
+
+
+/* ==========================================================
+   ERREUR GPS
+   ========================================================== */
+
+function erreurGPS(
+  error
+) {
+
   document.getElementById('status').innerText =
-    'Erreur GPS : ' + error.message;
+
+    'Erreur GPS : ' +
+
+    error.message;
+
 }
 
-if ('geolocation' in navigator) {
+
+
+/* ==========================================================
+   DÉMARRAGE GPS
+   ========================================================== */
+
+if (
+  'geolocation' in navigator
+) {
 
   navigator.geolocation.watchPosition(
+
     positionTrouvee,
+
     erreurGPS,
+
     {
-      enableHighAccuracy: true,
-      maximumAge: 2000,
-      timeout: 15000
+
+      enableHighAccuracy:
+        true,
+
+      maximumAge:
+        2000,
+
+      timeout:
+        15000
+
     }
+
   );
 
-} else {
+}
+
+else {
 
   document.getElementById('status').innerText =
+
     'GPS non disponible';
+
 }
 
 </script>
 
 </body>
+
 </html>
