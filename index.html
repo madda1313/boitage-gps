@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Boîtage GPS</title>
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      background: #f2f2f7;
+      text-align: center;
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 500px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-bottom: 5px;
+    }
+
+    #status {
+      font-size: 14px;
+      margin-bottom: 20px;
+      color: #666;
+    }
+
+    .rue {
+      background: white;
+      padding: 22px 15px;
+      border-radius: 18px;
+      font-size: 25px;
+      font-weight: 700;
+      min-height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,.08);
+    }
+
+    .bal {
+      font-size: 72px;
+      font-weight: 800;
+      margin: 25px 0 0;
+    }
+
+    .label {
+      font-size: 20px;
+      margin-bottom: 25px;
+      color: #555;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 17px;
+      padding: 22px 5px;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .minus {
+      background: #e5e5ea;
+    }
+
+    .plus {
+      background: #d1e7ff;
+    }
+
+    .plus5 {
+      background: #b9ddff;
+    }
+
+    .street {
+      width: 100%;
+      margin-top: 15px;
+      background: #ff9500;
+      color: white;
+      font-size: 18px;
+    }
+
+    .debug {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #777;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>📬 Boîtage GPS</h1>
+
+  <div id="status">
+    Initialisation GPS…
+  </div>
+
+  <div class="rue" id="rue">
+    Recherche de la rue…
+  </div>
+
+  <div class="bal" id="bal">0</div>
+
+  <div class="label">
+    boîtes aux lettres
+  </div>
+
+  <div class="buttons">
+
+    <button class="minus" onclick="modifier(-1)">
+      −1
+    </button>
+
+    <button class="plus" onclick="modifier(1)">
+      +1
+    </button>
+
+    <button class="plus5" onclick="modifier(5)">
+      +5
+    </button>
+
+  </div>
+
+  <button class="street" onclick="choisirRue()">
+    ✏️ Choisir la rue manuellement
+  </button>
+
+  <div class="debug" id="debug"></div>
+
+</div>
+
+<script>
+
+const RUES_TEST = [
+  'Chemin Marius Milon',
+  'Chemin des Mille Écus',
+  'Boulevard Marcel Delestrade'
+];
+
+let rueActive = '';
+let compteurs = JSON.parse(localStorage.getItem('compteursBoitage') || '{}');
+
+function sauvegarder() {
+  localStorage.setItem('compteursBoitage', JSON.stringify(compteurs));
+}
+
+function afficherCompteur() {
+  document.getElementById('bal').innerText =
+    rueActive ? (compteurs[rueActive] || 0) : 0;
+}
+
+function modifier(nombre) {
+  if (!rueActive) {
+    alert("Choisis d'abord une rue.");
+    return;
+  }
+
+  if (compteurs[rueActive] === undefined) {
+    compteurs[rueActive] = 0;
+  }
+
+  compteurs[rueActive] += nombre;
+
+  if (compteurs[rueActive] < 0) {
+    compteurs[rueActive] = 0;
+  }
+
+  sauvegarder();
+  afficherCompteur();
+}
+
+function activerRue(rue) {
+  rueActive = rue;
+
+  if (compteurs[rueActive] === undefined) {
+    compteurs[rueActive] = 0;
+  }
+
+  sauvegarder();
+
+  document.getElementById('rue').innerText =
+    '📍 ' + rueActive;
+
+  afficherCompteur();
+}
+
+function choisirRue() {
+  const choix = prompt(
+    "1 = Chemin Marius Milon\n" +
+    "2 = Chemin des Mille Écus\n" +
+    "3 = Boulevard Marcel Delestrade"
+  );
+
+  if (choix === '1') activerRue(RUES_TEST[0]);
+  if (choix === '2') activerRue(RUES_TEST[1]);
+  if (choix === '3') activerRue(RUES_TEST[2]);
+}
+
+async function reverseGeocode(lat, lng) {
+  try {
+    const url =
+      'https://nominatim.openstreetmap.org/reverse' +
+      '?format=jsonv2' +
+      '&lat=' + lat +
+      '&lon=' + lng +
+      '&zoom=18' +
+      '&addressdetails=1';
+
+    const response = await fetch(url, {
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+
+    const data = await response.json();
+
+    const rue =
+      data.address?.road ||
+      data.address?.pedestrian ||
+      data.address?.residential ||
+      data.address?.path ||
+      '';
+
+    return {
+      rue,
+      display: data.display_name || ''
+    };
+
+  } catch (e) {
+    return {
+      rue: '',
+      display: ''
+    };
+  }
+}
+
+function normaliser(texte) {
+  return texte
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[’']/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function identifierRue(rueGPS) {
+  const gps = normaliser(rueGPS);
+
+  for (const rue of RUES_TEST) {
+    const test = normaliser(rue);
+
+    if (
+      gps === test ||
+      gps.includes(test) ||
+      test.includes(gps)
+    ) {
+      return rue;
+    }
+  }
+
+  return '';
+}
+
+async function positionTrouvee(position) {
+
+  const lat = position.coords.latitude;
+  const lng = position.coords.longitude;
+  const precision = Math.round(position.coords.accuracy);
+
+  document.getElementById('status').innerText =
+    'GPS actif — précision ±' + precision + ' m';
+
+  const resultat = await reverseGeocode(lat, lng);
+
+  document.getElementById('debug').innerText =
+    'GPS : ' +
+    lat.toFixed(6) +
+    ', ' +
+    lng.toFixed(6) +
+    '\nRue GPS : ' +
+    (resultat.rue || 'inconnue');
+
+  const rueTrouvee = identifierRue(resultat.rue);
+
+  if (rueTrouvee) {
+    activerRue(rueTrouvee);
+  } else {
+    document.getElementById('rue').innerText =
+      '📍 Hors rue de test';
+  }
+}
+
+function erreurGPS(error) {
+  document.getElementById('status').innerText =
+    'Erreur GPS : ' + error.message;
+}
+
+if ('geolocation' in navigator) {
+
+  navigator.geolocation.watchPosition(
+    positionTrouvee,
+    erreurGPS,
+    {
+      enableHighAccuracy: true,
+      maximumAge: 2000,
+      timeout: 15000
+    }
+  );
+
+} else {
+
+  document.getElementById('status').innerText =
+    'GPS non disponible';
+}
+
+</script>
+
+</body>
+</html>
