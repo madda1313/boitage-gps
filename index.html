@@ -86,67 +86,35 @@ body {
 
 .brand {
   padding: 25px 10px 28px;
-
   text-align: center;
 }
 
 .logo-box {
   position: relative;
-
   width: min(360px, 88%);
-  height: 125px;
-
   margin: auto;
-
-  overflow: hidden;
 }
-
-
-/*
-  Ton fichier actuel a le texte blanc
-  sur fond vert.
-
-  Cette technique affiche l'image dans
-  un cadre élégant.
-
-  On remplacera ensuite très facilement
-  ce fichier par la version transparente
-  du logo vert.
-*/
 
 .logo-box img {
   width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-
-  border-radius: 3px;
-
-  box-shadow:
-    0 8px 25px rgba(5,65,39,.09);
+  height: auto;
+  display: block;
+  object-fit: contain;
 }
-
 
 .brand-rule {
   width: 42px;
   height: 1px;
-
   margin: 25px auto 13px;
-
   background: var(--gold);
 }
 
-
 .brand-subtitle {
   margin: 0;
-
   color: var(--green);
-
   text-transform: uppercase;
-
   font-size: 10px;
   font-weight: 600;
-
   letter-spacing: 3px;
 }
 
@@ -157,14 +125,12 @@ body {
 
 .connection {
   display: flex;
-
   align-items: center;
   justify-content: center;
 
   gap: 7px;
 
   min-height: 28px;
-
   margin-bottom: 14px;
 
   font-size: 12px;
@@ -197,14 +163,12 @@ body {
 
 .card {
   margin-bottom: 15px;
-
   padding: 21px;
 
   background:
     rgba(255,252,246,.92);
 
   border: 1px solid var(--border);
-
   border-radius: 17px;
 
   box-shadow: var(--shadow);
@@ -230,7 +194,6 @@ body {
 
 .street-card {
   position: relative;
-
   overflow: hidden;
 }
 
@@ -481,7 +444,6 @@ button {
   box-shadow: none;
 }
 
-
 .secondary {
   height: 48px;
 
@@ -530,7 +492,6 @@ button {
     0
     44px;
 }
-
 
 .search-results {
   display: none;
@@ -697,10 +658,6 @@ summary::-webkit-details-marker {
   .brand {
     padding-top: 17px;
     padding-bottom: 21px;
-  }
-
-  .logo-box {
-    height: 105px;
   }
 
   .street-name {
@@ -1223,10 +1180,10 @@ function startGPS() {
             true,
 
           maximumAge:
-            3000,
+            1000,
 
           timeout:
-            15000
+            10000
 
         }
 
@@ -1280,6 +1237,18 @@ function onPosition(
       ' m';
 
 
+  /*
+    On garde toujours la dernière position
+    disponible, même en mode manuel.
+  */
+
+  lastGeocodeLat =
+    lat;
+
+  lastGeocodeLng =
+    lng;
+
+
   if (
     manualMode
   ) {
@@ -1293,30 +1262,18 @@ function onPosition(
     Date.now();
 
 
+  /*
+    3 secondes au lieu de 8
+  */
+
   const enoughTime =
     now -
     lastGeocodeTime
-    >= 8000;
-
-
-  const enoughDistance =
-
-    lastGeocodeLat === null ||
-
-    distanceMeters(
-
-      lat,
-      lng,
-
-      lastGeocodeLat,
-      lastGeocodeLng
-
-    ) >= 12;
+    >= 3000;
 
 
   if (
-    !enoughTime &&
-    !enoughDistance
+    !enoughTime
   ) {
 
     return;
@@ -1326,12 +1283,6 @@ function onPosition(
 
   lastGeocodeTime =
     now;
-
-  lastGeocodeLat =
-    lat;
-
-  lastGeocodeLng =
-    lng;
 
 
   reverseGeocode(
@@ -1632,37 +1583,14 @@ function detectStreet(
   }
 
 
+  /*
+    Une seule détection suffit désormais.
+  */
+
   if (
-    candidateId ===
+    !activeEntry ||
+    activeEntry.id !==
     match.id
-  ) {
-
-    candidateCount++;
-
-  }
-  else {
-
-    candidateId =
-      match.id;
-
-    candidateCount =
-      1;
-
-  }
-
-
-  if (
-
-    candidateCount >= 2
-
-    &&
-
-    (
-      !activeEntry ||
-      activeEntry.id !==
-      match.id
-    )
-
   ) {
 
     activateStreet(
@@ -2459,6 +2387,27 @@ function clearManualSelection() {
     ' rues • GPS actif',
     'ok'
   );
+
+
+  /*
+    On force une nouvelle recherche immédiatement.
+  */
+
+  lastGeocodeTime =
+    0;
+
+
+  if (
+    lastGeocodeLat !== null &&
+    lastGeocodeLng !== null
+  ) {
+
+    reverseGeocode(
+      lastGeocodeLat,
+      lastGeocodeLng
+    );
+
+  }
 
 }
 
