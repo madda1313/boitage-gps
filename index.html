@@ -1,255 +1,837 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Boîtage GPS Allauch</title>
+<meta charset="UTF-8">
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
 
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f3f4f6;
-      color: #111827;
-    }
+<meta name="theme-color" content="#F7F4EC">
 
-    .app {
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 18px;
-    }
+<title>Immobilière du Golf — Boîtage</title>
 
-    .card {
-      background: white;
-      border-radius: 18px;
-      padding: 18px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-    }
+<style>
 
-    h1 {
-      font-size: 26px;
-      margin: 0 0 4px;
-    }
+:root {
+  --green: #064B2E;
+  --green-dark: #033B24;
+  --green-soft: #E8EFEA;
 
-    .subtitle {
-      color: #6b7280;
-      font-size: 14px;
-    }
+  --cream: #F7F4EC;
+  --cream-card: #FFFCF6;
 
-    .label {
-      font-size: 13px;
-      color: #6b7280;
-      margin-bottom: 6px;
-      font-weight: 600;
-    }
+  --gold: #B99A5E;
 
-    .street-name {
-      font-size: 24px;
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 6px;
-    }
+  --border: rgba(6,75,46,.15);
+  --muted: #66756D;
 
-    .street-meta {
-      font-size: 14px;
-      color: #6b7280;
-    }
+  --shadow:
+    0 12px 35px rgba(20,50,35,.07);
+}
 
-    .status {
-      margin-top: 12px;
-      font-size: 14px;
-      font-weight: 600;
-    }
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
 
-    .status.ok {
-      color: #15803d;
-    }
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
 
-    .status.wait {
-      color: #a16207;
-    }
+body {
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
 
-    .status.error {
-      color: #b91c1c;
-    }
+  background:
+    radial-gradient(
+      circle at top,
+      #fffdf8 0,
+      var(--cream) 45%,
+      #f2eee5 100%
+    );
 
-    .bal-current {
-      margin-top: 14px;
-      padding: 14px;
-      border-radius: 14px;
-      background: #f9fafb;
-      text-align: center;
-    }
+  color: var(--green-dark);
+}
 
-    .bal-current .number {
-      font-size: 42px;
-      font-weight: 800;
-      margin-top: 4px;
-    }
 
-    input[type="number"],
-    input[type="text"] {
-      width: 100%;
-      border: 1px solid #d1d5db;
-      border-radius: 14px;
-      padding: 15px 14px;
-      font-size: 18px;
-      outline: none;
-      background: white;
-    }
+/* ===========================
+   APP
+=========================== */
 
-    input:focus {
-      border-color: #111827;
-    }
+.app {
+  width: 100%;
+  max-width: 620px;
 
-    .bal-input {
-      font-size: 34px !important;
-      font-weight: 800;
-      text-align: center;
-    }
+  margin: auto;
 
-    button {
-      width: 100%;
-      border: none;
-      border-radius: 14px;
-      padding: 16px;
-      font-size: 18px;
-      font-weight: 800;
-      cursor: pointer;
-      margin-top: 12px;
-    }
+  padding:
+    env(safe-area-inset-top)
+    17px
+    calc(35px + env(safe-area-inset-bottom));
+}
 
-    .primary {
-      background: #111827;
-      color: white;
-    }
 
-    .secondary {
-      background: #e5e7eb;
-      color: #111827;
-    }
+/* ===========================
+   HEADER PRESTIGE
+=========================== */
 
-    .danger {
-      background: #fee2e2;
-      color: #991b1b;
-    }
+.brand {
+  padding: 25px 10px 28px;
 
-    button:disabled {
-      opacity: .45;
-      cursor: not-allowed;
-    }
+  text-align: center;
+}
 
-    .search-results {
-      margin-top: 10px;
-      max-height: 300px;
-      overflow-y: auto;
-      border-radius: 14px;
-      border: 1px solid #e5e7eb;
-      display: none;
-    }
+.logo-box {
+  position: relative;
 
-    .result {
-      padding: 13px 14px;
-      border-bottom: 1px solid #e5e7eb;
-      background: white;
-      cursor: pointer;
-    }
+  width: min(360px, 88%);
+  height: 125px;
 
-    .result:last-child {
-      border-bottom: none;
-    }
+  margin: auto;
 
-    .result strong {
-      display: block;
-      font-size: 16px;
-    }
+  overflow: hidden;
+}
 
-    .result small {
-      color: #6b7280;
-    }
 
-    .gps-box {
-      font-size: 13px;
-      line-height: 1.55;
-      color: #6b7280;
-    }
+/*
+  Ton fichier actuel a le texte blanc
+  sur fond vert.
 
-    .tag {
-      display: inline-block;
-      padding: 5px 9px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      margin-top: 6px;
-    }
+  Cette technique affiche l'image dans
+  un cadre élégant.
 
-    .tag.oui {
-      background: #dcfce7;
-      color: #166534;
-    }
+  On remplacera ensuite très facilement
+  ce fichier par la version transparente
+  du logo vert.
+*/
 
-    .tag.non {
-      background: #fee2e2;
-      color: #991b1b;
-    }
+.logo-box img {
+  width: 100%;
+  height: 100%;
 
-    .hidden {
-      display: none !important;
-    }
-  </style>
+  object-fit: cover;
+
+  border-radius: 3px;
+
+  box-shadow:
+    0 8px 25px rgba(5,65,39,.09);
+}
+
+
+.brand-rule {
+  width: 42px;
+  height: 1px;
+
+  margin: 25px auto 13px;
+
+  background: var(--gold);
+}
+
+
+.brand-subtitle {
+  margin: 0;
+
+  color: var(--green);
+
+  text-transform: uppercase;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  letter-spacing: 3px;
+}
+
+
+/* ===========================
+   STATUS
+=========================== */
+
+.connection {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  min-height: 28px;
+
+  margin-bottom: 14px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  color: var(--green);
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: var(--gold);
+}
+
+.connection.ok .status-dot {
+  background: #48A66D;
+}
+
+.connection.error .status-dot {
+  background: #C76161;
+}
+
+
+/* ===========================
+   CARD
+=========================== */
+
+.card {
+  margin-bottom: 15px;
+
+  padding: 21px;
+
+  background:
+    rgba(255,252,246,.92);
+
+  border: 1px solid var(--border);
+
+  border-radius: 17px;
+
+  box-shadow: var(--shadow);
+}
+
+.section-title {
+  margin-bottom: 11px;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+
+  text-transform: uppercase;
+
+  color: var(--gold);
+}
+
+
+/* ===========================
+   RUE ACTIVE
+=========================== */
+
+.street-card {
+  position: relative;
+
+  overflow: hidden;
+}
+
+.street-card::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 3px;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--green),
+      var(--gold),
+      var(--green)
+    );
+}
+
+.street-name {
+  margin-top: 3px;
+
+  color: var(--green-dark);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 29px;
+  font-weight: 500;
+
+  line-height: 1.12;
+}
+
+.street-meta {
+  margin-top: 8px;
+
+  color: var(--muted);
+
+  font-size: 13px;
+}
+
+
+/* ===========================
+   TAG
+=========================== */
+
+.tag {
+  display: inline-flex;
+
+  align-items: center;
+
+  margin-top: 12px;
+
+  padding: 6px 10px;
+
+  border-radius: 30px;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 1px;
+}
+
+.tag.oui {
+  background: #E7F2EA;
+  color: #327149;
+}
+
+.tag.non {
+  background: #F4E9E5;
+  color: #985C4A;
+}
+
+
+/* ===========================
+   BAL ACTUEL
+=========================== */
+
+.current-container {
+  margin-top: 22px;
+
+  padding-top: 18px;
+
+  border-top:
+    1px solid var(--border);
+
+  text-align: center;
+}
+
+.current-label {
+  color: var(--muted);
+
+  font-size: 10px;
+  font-weight: 600;
+
+  letter-spacing: 1.3px;
+
+  text-transform: uppercase;
+}
+
+.current-number {
+  margin-top: 4px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  color: var(--green);
+
+  font-size: 57px;
+  font-weight: 500;
+
+  line-height: 1;
+}
+
+.current-unit {
+  margin-top: 4px;
+
+  color: var(--gold);
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+}
+
+
+/* ===========================
+   INPUTS
+=========================== */
+
+input {
+  appearance: none;
+  -webkit-appearance: none;
+
+  width: 100%;
+
+  border: 1px solid var(--border);
+
+  border-radius: 12px;
+
+  background: #FFFFFF;
+
+  color: var(--green-dark);
+
+  outline: none;
+
+  font-size: 17px;
+
+  transition:
+    border .2s,
+    box-shadow .2s,
+    background .2s;
+}
+
+input:focus {
+  border-color:
+    rgba(6,75,46,.55);
+
+  box-shadow:
+    0 0 0 4px rgba(6,75,46,.07);
+}
+
+input::placeholder {
+  color: #A7AFA9;
+}
+
+
+/* ===========================
+   SAISIE BAL
+=========================== */
+
+.bal-input {
+  height: 79px;
+
+  padding: 6px 12px;
+
+  text-align: center;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 42px;
+
+  color: var(--green);
+
+  background: #FFFEFB;
+}
+
+
+/* ===========================
+   BUTTON
+=========================== */
+
+button {
+  width: 100%;
+
+  border: 0;
+  outline: 0;
+
+  cursor: pointer;
+
+  font-family: inherit;
+}
+
+.primary {
+  height: 57px;
+
+  margin-top: 12px;
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--green),
+      var(--green-dark)
+    );
+
+  color: #FFFDF7;
+
+  box-shadow:
+    0 9px 22px rgba(4,61,37,.17);
+
+  font-size: 13px;
+  font-weight: 700;
+
+  letter-spacing: 1.7px;
+
+  text-transform: uppercase;
+}
+
+.primary:active {
+  transform: scale(.985);
+}
+
+.primary:disabled {
+  opacity: .45;
+  box-shadow: none;
+}
+
+
+.secondary {
+  height: 48px;
+
+  margin-top: 12px;
+
+  border-radius: 12px;
+
+  background: var(--green-soft);
+
+  color: var(--green);
+
+  font-size: 12px;
+  font-weight: 700;
+
+  letter-spacing: .4px;
+}
+
+
+/* ===========================
+   SEARCH
+=========================== */
+
+.search-wrapper {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+
+  left: 15px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  font-size: 16px;
+
+  pointer-events: none;
+}
+
+#searchInput {
+  height: 56px;
+
+  padding:
+    0
+    15px
+    0
+    44px;
+}
+
+
+.search-results {
+  display: none;
+
+  max-height: 330px;
+
+  margin-top: 7px;
+
+  overflow-y: auto;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 12px;
+
+  background: white;
+
+  box-shadow:
+    0 12px 30px rgba(20,45,32,.1);
+}
+
+.result {
+  padding: 13px 14px;
+
+  border-bottom:
+    1px solid rgba(6,75,46,.08);
+}
+
+.result:last-child {
+  border-bottom: 0;
+}
+
+.result:active {
+  background: var(--green-soft);
+}
+
+.result strong {
+  display: block;
+
+  color: var(--green-dark);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 16px;
+
+  font-weight: 500;
+}
+
+.result small {
+  display: block;
+
+  margin-top: 4px;
+
+  color: var(--muted);
+
+  font-size: 11px;
+}
+
+
+/* ===========================
+   SAVED STATUS
+=========================== */
+
+.status {
+  margin-top: 11px;
+
+  text-align: center;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status.ok {
+  color: #327149;
+}
+
+.status.wait {
+  color: #9D7B3F;
+}
+
+.status.error {
+  color: #A85858;
+}
+
+
+/* ===========================
+   GPS DETAILS
+=========================== */
+
+details {
+  margin-top: 20px;
+
+  border-top:
+    1px solid rgba(6,75,46,.1);
+
+  color: var(--muted);
+}
+
+summary {
+  padding: 18px 2px 8px;
+
+  cursor: pointer;
+
+  list-style: none;
+
+  text-align: center;
+
+  color: var(--muted);
+
+  font-size: 10px;
+
+  letter-spacing: 1.5px;
+
+  text-transform: uppercase;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+.gps-box {
+  padding: 13px 5px;
+
+  font-size: 11px;
+
+  line-height: 1.8;
+}
+
+
+/* ===========================
+   FOOTER
+=========================== */
+
+.footer {
+  padding: 15px 0 25px;
+
+  text-align: center;
+
+  color: rgba(6,75,46,.45);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 11px;
+}
+
+
+/* ===========================
+   IPHONE
+=========================== */
+
+@media (max-width: 430px) {
+
+  .app {
+    padding-left: 13px;
+    padding-right: 13px;
+  }
+
+  .brand {
+    padding-top: 17px;
+    padding-bottom: 21px;
+  }
+
+  .logo-box {
+    height: 105px;
+  }
+
+  .street-name {
+    font-size: 27px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+}
+
+</style>
 </head>
 
+
 <body>
+
 <div class="app">
 
-  <div class="card">
-    <h1>Boîtage Allauch</h1>
-    <div class="subtitle">GPS + suivi Google Sheets</div>
 
-    <div id="globalStatus" class="status wait">
-      Chargement de la base...
+  <!-- ======================
+       BRAND
+  ======================= -->
+
+  <header class="brand">
+
+    <div class="logo-box">
+      <img
+        src="logo-agence.png"
+        alt="Immobilière du Golf"
+      >
     </div>
+
+    <div class="brand-rule"></div>
+
+    <p class="brand-subtitle">
+      Suivi de prospection
+    </p>
+
+  </header>
+
+
+  <!-- ======================
+       API STATUS
+  ======================= -->
+
+  <div
+    id="connection"
+    class="connection"
+  >
+
+    <span class="status-dot"></span>
+
+    <span id="globalStatus">
+      Chargement de la base…
+    </span>
+
   </div>
 
 
-  <div class="card">
-    <div class="label">RUE ACTIVE</div>
+  <!-- ======================
+       STREET
+  ======================= -->
 
-    <div id="streetName" class="street-name">
+  <section class="card street-card">
+
+    <div class="section-title">
+      Rue active
+    </div>
+
+    <div
+      id="streetName"
+      class="street-name"
+    >
       Aucune rue sélectionnée
     </div>
 
-    <div id="streetMeta" class="street-meta">
-      En attente du GPS...
+    <div
+      id="streetMeta"
+      class="street-meta"
+    >
+      En attente du GPS…
     </div>
 
     <div id="faitTag"></div>
 
-    <div class="bal-current">
-      <div class="label">BAL ACTUELLES DANS GOOGLE SHEETS</div>
-      <div id="currentBal" class="number">—</div>
+
+    <div class="current-container">
+
+      <div class="current-label">
+        Total actuellement enregistré
+      </div>
+
+      <div
+        id="currentBal"
+        class="current-number"
+      >
+        —
+      </div>
+
+      <div class="current-unit">
+        BAL
+      </div>
+
     </div>
-  </div>
+
+  </section>
 
 
-  <div class="card">
-    <div class="label">NOMBRE DE BAL CONSTATÉES</div>
+  <!-- ======================
+       BAL
+  ======================= -->
+
+  <section class="card">
+
+    <div class="section-title">
+      Boîtes aux lettres constatées
+    </div>
 
     <input
       id="balInput"
       class="bal-input"
       type="number"
       inputmode="numeric"
+      pattern="[0-9]*"
       min="0"
       step="1"
       placeholder="0"
       disabled
-    />
+    >
 
     <button
       id="saveButton"
@@ -260,46 +842,106 @@
       Enregistrer
     </button>
 
-    <div id="saveStatus" class="status"></div>
-  </div>
+    <div
+      id="saveStatus"
+      class="status"
+    ></div>
+
+  </section>
 
 
-  <div class="card">
-    <div class="label">CHANGER DE RUE MANUELLEMENT</div>
+  <!-- ======================
+       MANUAL STREET
+  ======================= -->
 
-    <input
-      id="searchInput"
-      type="text"
-      placeholder="Ex : Marius Milon, Aubagnens..."
-      autocomplete="off"
-      oninput="searchStreet()"
-    />
+  <section class="card">
 
-    <div id="searchResults" class="search-results"></div>
+    <div class="section-title">
+      Sélection manuelle
+    </div>
 
-    <button class="secondary" onclick="clearManualSelection()">
-      Revenir à la détection GPS
+    <div class="search-wrapper">
+
+      <div class="search-icon">
+        ⌕
+      </div>
+
+      <input
+        id="searchInput"
+        type="text"
+        placeholder="Rechercher une rue…"
+        autocomplete="off"
+        oninput="searchStreet()"
+      >
+
+    </div>
+
+    <div
+      id="searchResults"
+      class="search-results"
+    ></div>
+
+    <button
+      class="secondary"
+      onclick="clearManualSelection()"
+    >
+      Réactiver la détection GPS
     </button>
-  </div>
+
+  </section>
 
 
-  <div class="card">
-    <div class="label">GPS / DIAGNOSTIC</div>
+
+  <!-- ======================
+       GPS TECHNIQUE
+  ======================= -->
+
+  <details>
+
+    <summary>
+      Informations GPS
+    </summary>
 
     <div class="gps-box">
-      <div>Latitude : <span id="lat">—</span></div>
-      <div>Longitude : <span id="lng">—</span></div>
-      <div>Précision : <span id="accuracy">—</span></div>
-      <div>Rue détectée : <span id="rawStreet">—</span></div>
+
+      <div>
+        Latitude :
+        <span id="lat">—</span>
+      </div>
+
+      <div>
+        Longitude :
+        <span id="lng">—</span>
+      </div>
+
+      <div>
+        Précision :
+        <span id="accuracy">—</span>
+      </div>
+
+      <div>
+        Détection :
+        <span id="rawStreet">—</span>
+      </div>
+
     </div>
-  </div>
+
+  </details>
+
+
+  <footer class="footer">
+    Immobilière du Golf
+  </footer>
+
 
 </div>
 
 
 <script>
+
 const API_URL =
-  'https://script.google.com/macros/s/AKfycbxEA7mzj-B1_LH_Sw8WWs0-nBNjwdAGcH4DMlQJ4IgkBdD-BS9v5Qg7ITpiZC_MdbbG/exec';
+'https://script.google.com/macros/s/AKfycbxEA7mzj-B1_LH_Sw8WWs0-nBNjwdAGcH4DMlQJ4IgkBdD-BS9v5Qg7ITpiZC_MdbbG/exec';
+
 
 let baseRues = [];
 
@@ -310,6 +952,7 @@ let manualMode = false;
 let gpsWatchId = null;
 
 let lastGeocodeTime = 0;
+
 let lastGeocodeLat = null;
 let lastGeocodeLng = null;
 
@@ -319,733 +962,1610 @@ let candidateId = null;
 let candidateCount = 0;
 
 let loadingStreet = false;
+
 let saving = false;
 
 
+/* ==========================
+   NORMALISATION
+========================== */
+
 function normalizeText(text) {
+
   return String(text || '')
+
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
+
+    .replace(
+      /[\u0300-\u036f]/g,
+      ''
+    )
+
     .toLowerCase()
-    .replace(/[’']/g, ' ')
-    .replace(/[-_/]/g, ' ')
-    .replace(/\b(chemin|chem|ch|impasse|imp|avenue|av|boulevard|bd|route|rue|allee|allée|lotissement|lot|traverse|montée|montee|place|cours)\b/g, ' ')
-    .replace(/\s+/g, ' ')
+
+    .replace(
+      /[’']/g,
+      ' '
+    )
+
+    .replace(
+      /[-_/]/g,
+      ' '
+    )
+
+    .replace(
+      /\b(chemin|chem|ch|impasse|imp|avenue|av|boulevard|bd|route|rue|allee|allée|lotissement|lot|traverse|montée|montee|place|cours)\b/g,
+      ' '
+    )
+
+    .replace(
+      /\s+/g,
+      ' '
+    )
+
     .trim();
 }
 
 
+/* ==========================
+   JSONP
+========================== */
+
 function jsonp(params) {
-  return new Promise((resolve, reject) => {
 
-    const callbackName =
-      'jsonp_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+  return new Promise(
+    (resolve, reject) => {
 
-    params.callback = callbackName;
+      const callbackName =
+        'jsonp_' +
+        Date.now() +
+        '_' +
+        Math.floor(
+          Math.random() * 100000
+        );
 
-    const query = new URLSearchParams(params).toString();
 
-    const script = document.createElement('script');
+      params.callback =
+        callbackName;
 
-    const timeout = setTimeout(() => {
-      cleanup();
-      reject(new Error('Délai dépassé'));
-    }, 12000);
 
-    function cleanup() {
-      clearTimeout(timeout);
+      const query =
+        new URLSearchParams(
+          params
+        ).toString();
 
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
+
+      const script =
+        document.createElement(
+          'script'
+        );
+
+
+      const timeout =
+        setTimeout(
+          () => {
+
+            cleanup();
+
+            reject(
+              new Error(
+                'Délai dépassé'
+              )
+            );
+
+          },
+          12000
+        );
+
+
+      function cleanup() {
+
+        clearTimeout(
+          timeout
+        );
+
+
+        if (
+          script.parentNode
+        ) {
+
+          script.parentNode
+            .removeChild(
+              script
+            );
+
+        }
+
+
+        try {
+
+          delete window[
+            callbackName
+          ];
+
+        }
+        catch(e) {}
+
       }
 
-      try {
-        delete window[callbackName];
-      } catch(e) {}
+
+      window[
+        callbackName
+      ] =
+        function(data) {
+
+          cleanup();
+
+          resolve(
+            data
+          );
+
+        };
+
+
+      script.onerror =
+        function() {
+
+          cleanup();
+
+          reject(
+            new Error(
+              'Erreur JSONP'
+            )
+          );
+
+        };
+
+
+      script.src =
+        API_URL +
+        '?' +
+        query;
+
+
+      document.body
+        .appendChild(
+          script
+        );
+
     }
-
-    window[callbackName] = function(data) {
-      cleanup();
-      resolve(data);
-    };
-
-    script.onerror = function() {
-      cleanup();
-      reject(new Error('Erreur JSONP'));
-    };
-
-    script.src = API_URL + '?' + query;
-
-    document.body.appendChild(script);
-  });
+  );
 }
 
 
+/* ==========================
+   BASE
+========================== */
+
 async function loadBase() {
-  setGlobalStatus('Chargement des 652 rues...', 'wait');
+
+  setGlobalStatus(
+    'Chargement des rues…',
+    'wait'
+  );
+
 
   try {
 
-    const data = await jsonp({
-      action: 'liste'
-    });
+    const data =
+      await jsonp({
+        action: 'liste'
+      });
+
 
     if (!data.ok) {
-      throw new Error(data.message || 'Erreur API');
+
+      throw new Error(
+        data.message ||
+        'Erreur API'
+      );
+
     }
 
-    baseRues = data.rues || [];
+
+    baseRues =
+      data.rues || [];
+
 
     setGlobalStatus(
-      baseRues.length + ' rues chargées — GPS actif',
+      baseRues.length +
+      ' rues • GPS actif',
       'ok'
     );
 
+
     startGPS();
 
-  } catch (err) {
+  }
+  catch (err) {
 
     setGlobalStatus(
-      'Impossible de charger la base : ' + err.message,
+      'Connexion impossible',
       'error'
     );
 
   }
+
 }
 
+
+/* ==========================
+   GPS
+========================== */
 
 function startGPS() {
 
-  if (!navigator.geolocation) {
+  if (
+    !navigator.geolocation
+  ) {
+
     setGlobalStatus(
-      'GPS non disponible sur cet appareil',
+      'GPS indisponible',
       'error'
     );
+
     return;
+
   }
 
-  gpsWatchId = navigator.geolocation.watchPosition(
-    onPosition,
-    onGpsError,
-    {
-      enableHighAccuracy: true,
-      maximumAge: 3000,
-      timeout: 15000
-    }
-  );
+
+  gpsWatchId =
+    navigator.geolocation
+      .watchPosition(
+
+        onPosition,
+
+        onGpsError,
+
+        {
+
+          enableHighAccuracy:
+            true,
+
+          maximumAge:
+            3000,
+
+          timeout:
+            15000
+
+        }
+
+      );
+
 }
 
 
-function onPosition(position) {
+function onPosition(
+  position
+) {
 
-  const lat = position.coords.latitude;
-  const lng = position.coords.longitude;
-  const accuracy = position.coords.accuracy;
+  const lat =
+    position.coords
+      .latitude;
 
-  document.getElementById('lat').textContent =
-    lat.toFixed(6);
+  const lng =
+    position.coords
+      .longitude;
 
-  document.getElementById('lng').textContent =
-    lng.toFixed(6);
+  const accuracy =
+    position.coords
+      .accuracy;
 
-  document.getElementById('accuracy').textContent =
-    '± ' + Math.round(accuracy) + ' m';
 
-  if (manualMode) {
+  document
+    .getElementById(
+      'lat'
+    )
+    .textContent =
+      lat.toFixed(6);
+
+
+  document
+    .getElementById(
+      'lng'
+    )
+    .textContent =
+      lng.toFixed(6);
+
+
+  document
+    .getElementById(
+      'accuracy'
+    )
+    .textContent =
+      '± ' +
+      Math.round(
+        accuracy
+      ) +
+      ' m';
+
+
+  if (
+    manualMode
+  ) {
+
     return;
+
   }
 
-  const now = Date.now();
+
+  const now =
+    Date.now();
+
 
   const enoughTime =
-    now - lastGeocodeTime >= 8000;
+    now -
+    lastGeocodeTime
+    >= 8000;
+
 
   const enoughDistance =
+
     lastGeocodeLat === null ||
+
     distanceMeters(
+
       lat,
       lng,
+
       lastGeocodeLat,
       lastGeocodeLng
+
     ) >= 12;
 
-  if (!enoughTime && !enoughDistance) {
+
+  if (
+    !enoughTime &&
+    !enoughDistance
+  ) {
+
     return;
+
   }
 
-  lastGeocodeTime = now;
-  lastGeocodeLat = lat;
-  lastGeocodeLng = lng;
 
-  reverseGeocode(lat, lng);
+  lastGeocodeTime =
+    now;
+
+  lastGeocodeLat =
+    lat;
+
+  lastGeocodeLng =
+    lng;
+
+
+  reverseGeocode(
+    lat,
+    lng
+  );
+
 }
 
 
-function onGpsError(error) {
+function onGpsError(
+  error
+) {
 
-  let message = 'Erreur GPS';
+  let message =
+    'Erreur GPS';
 
-  if (error.code === 1) {
-    message = 'Autorisation GPS refusée';
-  }
-  else if (error.code === 2) {
-    message = 'Position GPS indisponible';
-  }
-  else if (error.code === 3) {
-    message = 'GPS trop lent';
+
+  if (
+    error.code === 1
+  ) {
+
+    message =
+      'Autorisation GPS refusée';
+
   }
 
-  setGlobalStatus(message, 'error');
+  else if (
+    error.code === 2
+  ) {
+
+    message =
+      'Position GPS indisponible';
+
+  }
+
+  else if (
+    error.code === 3
+  ) {
+
+    message =
+      'GPS trop lent';
+
+  }
+
+
+  setGlobalStatus(
+    message,
+    'error'
+  );
+
 }
 
 
-function distanceMeters(lat1, lon1, lat2, lon2) {
+/* ==========================
+   DISTANCE
+========================== */
 
-  const R = 6371000;
+function distanceMeters(
+  lat1,
+  lon1,
+  lat2,
+  lon2
+) {
 
-  const toRad = x => x * Math.PI / 180;
+  const R =
+    6371000;
 
-  const dLat = toRad(lat2 - lat1);
-  const dLon = toRad(lon2 - lon1);
+
+  const toRad =
+    x =>
+      x *
+      Math.PI /
+      180;
+
+
+  const dLat =
+    toRad(
+      lat2 -
+      lat1
+    );
+
+
+  const dLon =
+    toRad(
+      lon2 -
+      lon1
+    );
+
 
   const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRad(lat1)) *
-    Math.cos(toRad(lat2)) *
-    Math.sin(dLon / 2) ** 2;
 
-  return 2 * R * Math.atan2(
-    Math.sqrt(a),
-    Math.sqrt(1 - a)
+    Math.sin(
+      dLat / 2
+    ) ** 2
+
+    +
+
+    Math.cos(
+      toRad(lat1)
+    )
+
+    *
+
+    Math.cos(
+      toRad(lat2)
+    )
+
+    *
+
+    Math.sin(
+      dLon / 2
+    ) ** 2;
+
+
+  return (
+
+    2 *
+    R *
+    Math.atan2(
+
+      Math.sqrt(a),
+
+      Math.sqrt(
+        1 - a
+      )
+
+    )
+
   );
+
 }
 
 
-async function reverseGeocode(lat, lng) {
+/* ==========================
+   NOMINATIM
+========================== */
 
-  const sequence = ++geocodeSequence;
+async function reverseGeocode(
+  lat,
+  lng
+) {
+
+  const sequence =
+    ++geocodeSequence;
+
 
   try {
 
     const url =
+
       'https://nominatim.openstreetmap.org/reverse' +
+
       '?format=jsonv2' +
-      '&lat=' + encodeURIComponent(lat) +
-      '&lon=' + encodeURIComponent(lng) +
+
+      '&lat=' +
+      encodeURIComponent(lat) +
+
+      '&lon=' +
+      encodeURIComponent(lng) +
+
       '&zoom=18' +
+
       '&addressdetails=1';
 
-    const response = await fetch(url, {
-      headers: {
-        'Accept-Language': 'fr'
-      }
-    });
 
-    if (!response.ok) {
-      throw new Error('Nominatim');
+    const response =
+      await fetch(
+        url,
+        {
+
+          headers: {
+
+            'Accept-Language':
+              'fr'
+
+          }
+
+        }
+      );
+
+
+    if (
+      !response.ok
+    ) {
+
+      throw new Error(
+        'Nominatim'
+      );
+
     }
 
-    const data = await response.json();
 
-    if (sequence !== geocodeSequence) {
+    const data =
+      await response.json();
+
+
+    if (
+      sequence !==
+      geocodeSequence
+    ) {
+
       return;
+
     }
 
-    const address = data.address || {};
+
+    const address =
+      data.address || {};
+
 
     const rawStreet =
+
       address.road ||
+
       address.pedestrian ||
+
       address.residential ||
+
       address.path ||
+
       address.neighbourhood ||
+
       '';
 
-    document.getElementById('rawStreet').textContent =
-      rawStreet || 'Non reconnue';
 
-    if (!rawStreet) {
+    document
+      .getElementById(
+        'rawStreet'
+      )
+      .textContent =
+
+        rawStreet ||
+        'Non reconnue';
+
+
+    if (
+      !rawStreet
+    ) {
+
       return;
+
     }
 
-    detectStreet(rawStreet);
 
-  } catch (err) {
+    detectStreet(
+      rawStreet
+    );
+
+  }
+  catch (err) {
 
     console.log(
-      'Erreur reverse geocoding',
+      'Erreur géocodage',
       err
     );
 
   }
+
 }
 
 
-function detectStreet(rawStreet) {
+/* ==========================
+   DETECTION
+========================== */
 
-  if (manualMode) {
-    return;
-  }
-
-  const match = findBestMatch(rawStreet);
-
-  if (!match) {
-    candidateId = null;
-    candidateCount = 0;
-    return;
-  }
-
-  if (candidateId === match.id) {
-    candidateCount++;
-  } else {
-    candidateId = match.id;
-    candidateCount = 1;
-  }
+function detectStreet(
+  rawStreet
+) {
 
   if (
-    candidateCount >= 2 &&
-    (!activeEntry || activeEntry.id !== match.id)
+    manualMode
   ) {
-    activateStreet(match.id, false);
+
+    return;
+
   }
+
+
+  const match =
+    findBestMatch(
+      rawStreet
+    );
+
+
+  if (
+    !match
+  ) {
+
+    candidateId =
+      null;
+
+    candidateCount =
+      0;
+
+    return;
+
+  }
+
+
+  if (
+    candidateId ===
+    match.id
+  ) {
+
+    candidateCount++;
+
+  }
+  else {
+
+    candidateId =
+      match.id;
+
+    candidateCount =
+      1;
+
+  }
+
+
+  if (
+
+    candidateCount >= 2
+
+    &&
+
+    (
+      !activeEntry ||
+      activeEntry.id !==
+      match.id
+    )
+
+  ) {
+
+    activateStreet(
+      match.id,
+      false
+    );
+
+  }
+
 }
 
 
-function findBestMatch(rawStreet) {
+/* ==========================
+   MATCH
+========================== */
 
-  const raw = normalizeText(rawStreet);
+function findBestMatch(
+  rawStreet
+) {
 
-  if (!raw) {
+  const raw =
+    normalizeText(
+      rawStreet
+    );
+
+
+  if (
+    !raw
+  ) {
+
     return null;
+
   }
 
-  let best = null;
-  let bestScore = 0;
 
-  for (const item of baseRues) {
+  let best =
+    null;
 
-    const street = normalizeText(item.rue);
+  let bestScore =
+    0;
 
-    if (!street) {
+
+  for (
+    const item
+    of baseRues
+  ) {
+
+    const street =
+      normalizeText(
+        item.rue
+      );
+
+
+    if (
+      !street
+    ) {
+
       continue;
+
     }
 
-    let score = 0;
 
-    if (street === raw) {
-      score = 100;
+    let score =
+      0;
+
+
+    if (
+      street ===
+      raw
+    ) {
+
+      score =
+        100;
+
     }
 
     else if (
-      street.includes(raw) ||
-      raw.includes(street)
+
+      street.includes(
+        raw
+      )
+
+      ||
+
+      raw.includes(
+        street
+      )
+
     ) {
-      score = 85;
+
+      score =
+        85;
+
     }
 
     else {
 
-      const rawWords = raw.split(' ');
-      const streetWords = street.split(' ');
+      const rawWords =
+        raw.split(' ');
+
+      const streetWords =
+        street.split(' ');
+
 
       const common =
-        rawWords.filter(word =>
-          streetWords.includes(word)
+        rawWords.filter(
+          word =>
+            streetWords.includes(
+              word
+            )
         );
+
 
       if (
         common.length >= 2
       ) {
+
         score =
+
           50 +
-          common.length * 10;
+
+          common.length *
+          10;
+
       }
+
     }
 
-    if (score > bestScore) {
-      bestScore = score;
-      best = item;
+
+    if (
+      score >
+      bestScore
+    ) {
+
+      bestScore =
+        score;
+
+      best =
+        item;
+
     }
+
   }
 
-  if (bestScore < 60) {
+
+  if (
+    bestScore < 60
+  ) {
+
     return null;
+
   }
+
 
   return best;
+
 }
 
 
-async function activateStreet(id, fromManual) {
+/* ==========================
+   ACTIVE STREET
+========================== */
 
-  if (loadingStreet) {
+async function activateStreet(
+  id,
+  fromManual
+) {
+
+  if (
+    loadingStreet
+  ) {
+
     return;
+
   }
 
-  loadingStreet = true;
+
+  loadingStreet =
+    true;
+
 
   setSaveStatus(
-    'Chargement des BAL depuis Google Sheets...',
+    'Synchronisation…',
     'wait'
   );
 
+
   try {
 
-    const data = await jsonp({
-      action: 'getRue',
-      id: id
-    });
+    const data =
+      await jsonp({
 
-    if (!data.ok) {
+        action:
+          'getRue',
+
+        id:
+          id
+
+      });
+
+
+    if (
+      !data.ok
+    ) {
+
       throw new Error(
-        data.message || 'Rue introuvable'
+        data.message ||
+        'Rue introuvable'
       );
+
     }
 
-    activeEntry = data;
 
-    if (fromManual) {
-      manualMode = true;
+    activeEntry =
+      data;
+
+
+    if (
+      fromManual
+    ) {
+
+      manualMode =
+        true;
+
     }
+
 
     displayActiveStreet();
 
-    setSaveStatus('', '');
-
-  } catch (err) {
 
     setSaveStatus(
-      'Erreur : ' + err.message,
-      'error'
+      '',
+      ''
     );
 
-  } finally {
+  }
+  catch (
+    err
+  ) {
 
-    loadingStreet = false;
+    setSaveStatus(
+
+      'Erreur : ' +
+      err.message,
+
+      'error'
+
+    );
 
   }
+  finally {
+
+    loadingStreet =
+      false;
+
+  }
+
 }
 
 
+/* ==========================
+   DISPLAY
+========================== */
+
 function displayActiveStreet() {
 
-  if (!activeEntry) {
+  if (
+    !activeEntry
+  ) {
+
     return;
+
   }
 
-  document.getElementById('streetName').textContent =
-    activeEntry.rue;
 
-  document.getElementById('streetMeta').textContent =
-    activeEntry.jour +
-    ' • ordre ' +
-    activeEntry.ordre +
-    ' • ' +
-    activeEntry.type;
+  document
+    .getElementById(
+      'streetName'
+    )
+    .textContent =
+      activeEntry.rue;
 
-  document.getElementById('currentBal').textContent =
-    activeEntry.bal;
+
+  document
+    .getElementById(
+      'streetMeta'
+    )
+    .textContent =
+
+      activeEntry.jour +
+
+      '  •  n° ' +
+
+      activeEntry.ordre +
+
+      '  •  ' +
+
+      activeEntry.type;
+
+
+  document
+    .getElementById(
+      'currentBal'
+    )
+    .textContent =
+      activeEntry.bal;
+
 
   const input =
-    document.getElementById('balInput');
+    document
+      .getElementById(
+        'balInput'
+      );
 
-  input.disabled = false;
+
+  input.disabled =
+    false;
+
 
   input.value =
     activeEntry.bal;
 
-  document.getElementById('saveButton').disabled =
-    false;
+
+  document
+    .getElementById(
+      'saveButton'
+    )
+    .disabled =
+      false;
+
 
   const fait =
-    String(activeEntry.fait || '')
-      .toLowerCase();
+
+    String(
+      activeEntry.fait ||
+      ''
+    )
+    .toLowerCase();
+
 
   const tag =
-    document.getElementById('faitTag');
+    document
+      .getElementById(
+        'faitTag'
+      );
 
-  if (fait === 'oui') {
+
+  if (
+    fait === 'oui'
+  ) {
 
     tag.innerHTML =
-      '<span class="tag oui">FAIT : OUI</span>';
 
-  } else {
-
-    tag.innerHTML =
-      '<span class="tag non">FAIT : NON</span>';
+      '<span class="tag oui">' +
+      '✓ FAIT' +
+      '</span>';
 
   }
+  else {
+
+    tag.innerHTML =
+
+      '<span class="tag non">' +
+      'À FAIRE' +
+      '</span>';
+
+  }
+
 }
 
+
+/* ==========================
+   SAVE BAL
+========================== */
 
 async function saveBAL() {
 
-  if (!activeEntry || saving) {
+  if (
+    !activeEntry ||
+    saving
+  ) {
+
     return;
+
   }
 
+
   const input =
-    document.getElementById('balInput');
+    document
+      .getElementById(
+        'balInput'
+      );
+
 
   const bal =
-    Number(input.value);
+    Number(
+      input.value
+    );
+
 
   if (
-    !Number.isFinite(bal) ||
-    bal < 0 ||
-    !Number.isInteger(bal)
+
+    !Number.isFinite(
+      bal
+    )
+
+    ||
+
+    bal < 0
+
+    ||
+
+    !Number.isInteger(
+      bal
+    )
+
   ) {
 
     setSaveStatus(
-      'Entre un nombre entier valide.',
+      'Entre un nombre valide.',
       'error'
     );
 
     return;
+
   }
 
-  saving = true;
 
-  document.getElementById('saveButton').disabled =
+  saving =
     true;
 
+
+  document
+    .getElementById(
+      'saveButton'
+    )
+    .disabled =
+      true;
+
+
   setSaveStatus(
-    'Enregistrement dans Google Sheets...',
+    'Enregistrement…',
     'wait'
   );
 
+
   try {
 
-    const result = await jsonp({
-      action: 'updateBAL',
-      id: activeEntry.id,
-      bal: bal
-    });
+    const result =
+      await jsonp({
 
-    if (!result.ok) {
+        action:
+          'updateBAL',
+
+        id:
+          activeEntry.id,
+
+        bal:
+          bal
+
+      });
+
+
+    if (
+      !result.ok
+    ) {
+
       throw new Error(
-        result.message || 'Erreur enregistrement'
+        result.message ||
+        'Erreur'
       );
+
     }
 
-    /*
-      IMPORTANT :
-      après l'écriture, on relit la ligne
-      depuis Google Sheets.
-      Le Sheet reste donc la source de vérité.
-    */
 
-    const fresh = await jsonp({
-      action: 'getRue',
-      id: activeEntry.id
-    });
+    const fresh =
+      await jsonp({
 
-    if (!fresh.ok) {
+        action:
+          'getRue',
+
+        id:
+          activeEntry.id
+
+      });
+
+
+    if (
+      !fresh.ok
+    ) {
+
       throw new Error(
-        'BAL enregistré, mais relecture impossible'
+        'Relecture impossible'
       );
+
     }
 
-    activeEntry = fresh;
+
+    activeEntry =
+      fresh;
+
 
     const baseIndex =
       baseRues.findIndex(
-        x => x.id === activeEntry.id
+        x =>
+          x.id ===
+          activeEntry.id
       );
 
-    if (baseIndex !== -1) {
-      baseRues[baseIndex].bal =
+
+    if (
+      baseIndex !== -1
+    ) {
+
+      baseRues[
+        baseIndex
+      ].bal =
         activeEntry.bal;
 
-      baseRues[baseIndex].fait =
+
+      baseRues[
+        baseIndex
+      ].fait =
         activeEntry.fait;
+
     }
+
 
     displayActiveStreet();
 
+
     setSaveStatus(
+
       '✓ ' +
       activeEntry.bal +
-      ' BAL enregistrées — Fait : ' +
-      activeEntry.fait,
+      ' BAL enregistrées',
+
       'ok'
+
     );
 
-  } catch (err) {
+  }
+  catch (
+    err
+  ) {
 
     setSaveStatus(
-      'Erreur : ' + err.message,
+
+      'Erreur : ' +
+      err.message,
+
       'error'
+
     );
 
-  } finally {
+  }
+  finally {
 
-    saving = false;
+    saving =
+      false;
 
-    if (activeEntry) {
-      document.getElementById('saveButton').disabled =
-        false;
+
+    if (
+      activeEntry
+    ) {
+
+      document
+        .getElementById(
+          'saveButton'
+        )
+        .disabled =
+          false;
+
     }
 
   }
+
 }
 
+
+/* ==========================
+   SEARCH
+========================== */
 
 function searchStreet() {
 
   const input =
-    document.getElementById('searchInput');
+    document
+      .getElementById(
+        'searchInput'
+      );
+
 
   const container =
-    document.getElementById('searchResults');
+    document
+      .getElementById(
+        'searchResults'
+      );
+
 
   const query =
-    normalizeText(input.value);
+    normalizeText(
+      input.value
+    );
 
-  container.innerHTML = '';
 
-  if (!query) {
+  container.innerHTML =
+    '';
+
+
+  if (
+    !query
+  ) {
 
     container.style.display =
       'none';
 
     return;
+
   }
 
+
   const results =
+
     baseRues
-      .filter(item => {
 
-        const rue =
-          normalizeText(item.rue);
+      .filter(
+        item => {
 
-        return rue.includes(query);
+          const rue =
+            normalizeText(
+              item.rue
+            );
 
-      })
-      .slice(0, 20);
+          return rue.includes(
+            query
+          );
 
-  if (results.length === 0) {
+        }
+      )
+
+      .slice(
+        0,
+        20
+      );
+
+
+  if (
+    results.length === 0
+  ) {
 
     container.innerHTML =
-      '<div class="result">Aucune rue trouvée</div>';
+
+      '<div class="result">' +
+      'Aucune rue trouvée' +
+      '</div>';
+
 
     container.style.display =
       'block';
 
+
     return;
+
   }
 
-  results.forEach(item => {
 
-    const div =
-      document.createElement('div');
+  results.forEach(
+    item => {
 
-    div.className =
-      'result';
+      const div =
+        document
+          .createElement(
+            'div'
+          );
 
-    div.innerHTML =
-      '<strong>' +
-      escapeHtml(item.rue) +
-      '</strong>' +
-      '<small>' +
-      escapeHtml(item.jour) +
-      ' • ordre ' +
-      item.ordre +
-      ' • ' +
-      escapeHtml(item.type) +
-      ' • BAL : ' +
-      item.bal +
-      '</small>';
 
-    div.onclick = () => {
+      div.className =
+        'result';
 
-      document.getElementById(
-        'searchInput'
-      ).value = item.rue;
 
-      container.style.display =
-        'none';
+      div.innerHTML =
 
-      activateStreet(
-        item.id,
-        true
-      );
+        '<strong>' +
 
-    };
+        escapeHtml(
+          item.rue
+        ) +
 
-    container.appendChild(div);
+        '</strong>' +
 
-  });
+        '<small>' +
+
+        escapeHtml(
+          item.jour
+        ) +
+
+        ' • n° ' +
+
+        item.ordre +
+
+        ' • ' +
+
+        escapeHtml(
+          item.type
+        ) +
+
+        ' • ' +
+
+        item.bal +
+
+        ' BAL' +
+
+        '</small>';
+
+
+      div.onclick =
+        () => {
+
+          document
+            .getElementById(
+              'searchInput'
+            )
+            .value =
+              item.rue;
+
+
+          container
+            .style
+            .display =
+              'none';
+
+
+          activateStreet(
+            item.id,
+            true
+          );
+
+        };
+
+
+      container
+        .appendChild(
+          div
+        );
+
+    }
+  );
+
 
   container.style.display =
     'block';
+
 }
 
+
+/* ==========================
+   AUTO GPS
+========================== */
 
 function clearManualSelection() {
 
-  manualMode = false;
+  manualMode =
+    false;
 
-  candidateId = null;
-  candidateCount = 0;
 
-  document.getElementById(
-    'searchInput'
-  ).value = '';
+  candidateId =
+    null;
 
-  document.getElementById(
-    'searchResults'
-  ).style.display = 'none';
+
+  candidateCount =
+    0;
+
+
+  document
+    .getElementById(
+      'searchInput'
+    )
+    .value =
+      '';
+
+
+  document
+    .getElementById(
+      'searchResults'
+    )
+    .style
+    .display =
+      'none';
+
 
   setGlobalStatus(
-    'Mode GPS automatique réactivé',
+    baseRues.length +
+    ' rues • GPS actif',
     'ok'
   );
+
 }
 
 
-function escapeHtml(text) {
+/* ==========================
+   UTILS
+========================== */
 
-  return String(text || '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
+function escapeHtml(
+  text
+) {
 
+  return String(
+    text || ''
+  )
 
-function setGlobalStatus(text, type) {
+    .replace(
+      /&/g,
+      '&amp;'
+    )
 
-  const el =
-    document.getElementById(
-      'globalStatus'
+    .replace(
+      /</g,
+      '&lt;'
+    )
+
+    .replace(
+      />/g,
+      '&gt;'
+    )
+
+    .replace(
+      /"/g,
+      '&quot;'
+    )
+
+    .replace(
+      /'/g,
+      '&#039;'
     );
 
-  el.textContent =
-    text;
-
-  el.className =
-    'status ' + type;
 }
 
 
-function setSaveStatus(text, type) {
+/* ==========================
+   STATUS
+========================== */
 
-  const el =
-    document.getElementById(
-      'saveStatus'
-    );
+function setGlobalStatus(
+  text,
+  type
+) {
 
-  el.textContent =
+  const textElement =
+    document
+      .getElementById(
+        'globalStatus'
+      );
+
+
+  const box =
+    document
+      .getElementById(
+        'connection'
+      );
+
+
+  textElement.textContent =
     text;
 
-  el.className =
-    'status ' + type;
+
+  box.className =
+    'connection ' +
+    type;
+
 }
 
+
+function setSaveStatus(
+  text,
+  type
+) {
+
+  const element =
+    document
+      .getElementById(
+        'saveStatus'
+      );
+
+
+  element.textContent =
+    text;
+
+
+  element.className =
+    'status ' +
+    type;
+
+}
+
+
+/* ==========================
+   START
+========================== */
 
 loadBase();
+
 </script>
 
 </body>
