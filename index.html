@@ -483,6 +483,245 @@ summary::-webkit-details-marker {
   }
 }
 
+
+/* ==========================================================
+   BAL DU JOUR + POPUP HISTORIQUE
+========================================================== */
+
+.today-bal {
+  margin-top: 18px;
+  padding-top: 17px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.today-bal-label {
+  color: var(--gold);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+
+.today-bal-value {
+  margin-top: 5px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  color: var(--green);
+  font-size: 32px;
+  line-height: 1;
+}
+
+.today-bal-value span {
+  font-size: 13px;
+  color: var(--muted);
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+
+  font-weight: 600;
+}
+
+.history-button {
+  height: 43px;
+  margin-top: 13px;
+  border-radius: 11px;
+
+  background: transparent;
+  border: 1px solid rgba(6,75,46,.18);
+
+  color: var(--green);
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.history-overlay {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+
+  padding:
+    calc(25px + env(safe-area-inset-top))
+    18px
+    calc(25px + env(safe-area-inset-bottom));
+
+  background:
+    rgba(3,38,24,.43);
+
+  backdrop-filter:
+    blur(7px);
+
+  -webkit-backdrop-filter:
+    blur(7px);
+
+  align-items: center;
+  justify-content: center;
+}
+
+.history-modal {
+  width: 100%;
+  max-width: 470px;
+  max-height: 78vh;
+
+  overflow: hidden;
+
+  background: var(--cream-card);
+
+  border:
+    1px solid rgba(185,154,94,.35);
+
+  border-radius: 20px;
+
+  box-shadow:
+    0 25px 70px rgba(0,30,18,.25);
+}
+
+.history-modal-header {
+  position: relative;
+
+  padding: 23px 50px 19px;
+
+  text-align: center;
+
+  border-bottom:
+    1px solid var(--border);
+}
+
+.history-modal-title {
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  color: var(--green-dark);
+
+  font-size: 23px;
+}
+
+.history-modal-subtitle {
+  margin-top: 5px;
+
+  color: var(--gold);
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 1.7px;
+
+  text-transform: uppercase;
+}
+
+.history-close {
+  position: absolute;
+
+  right: 14px;
+  top: 14px;
+
+  width: 34px;
+  height: 34px;
+
+  border-radius: 50%;
+
+  background:
+    var(--green-soft);
+
+  color:
+    var(--green);
+
+  font-size: 20px;
+
+  line-height: 34px;
+
+  padding: 0;
+}
+
+.history-list {
+  max-height: 55vh;
+  overflow-y: auto;
+
+  padding: 8px 20px 17px;
+}
+
+.history-row {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 15px 3px;
+
+  border-bottom:
+    1px solid rgba(6,75,46,.08);
+}
+
+.history-row:last-child {
+  border-bottom: 0;
+}
+
+.history-date {
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  color:
+    var(--green-dark);
+
+  font-size: 15px;
+}
+
+.history-value {
+  color:
+    var(--green);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 20px;
+}
+
+.history-value span {
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+
+  color:
+    var(--muted);
+
+  font-size: 10px;
+
+  font-weight: 700;
+}
+
+.history-empty {
+  padding: 35px 10px;
+
+  text-align: center;
+
+  color:
+    var(--muted);
+
+  font-size: 12px;
+}
+
 </style>
 </head>
 
@@ -597,6 +836,30 @@ summary::-webkit-details-marker {
       class="status"
     ></div>
 
+
+    <div class="today-bal">
+
+      <div class="today-bal-label">
+        Aujourd'hui
+      </div>
+
+      <div
+        id="todayBal"
+        class="today-bal-value"
+      >
+        0 <span>BAL</span>
+      </div>
+
+    </div>
+
+
+    <button
+      class="history-button"
+      onclick="openHistory()"
+    >
+      Historique
+    </button>
+
   </section>
 
 
@@ -682,6 +945,43 @@ summary::-webkit-details-marker {
 </div>
 
 
+<div
+  id="historyOverlay"
+  class="history-overlay"
+  onclick="closeHistoryFromOverlay(event)"
+>
+
+  <div class="history-modal">
+
+    <div class="history-modal-header">
+
+      <button
+        class="history-close"
+        onclick="closeHistory()"
+      >
+        ×
+      </button>
+
+      <div class="history-modal-title">
+        Historique
+      </div>
+
+      <div class="history-modal-subtitle">
+        Boîtes aux lettres distribuées
+      </div>
+
+    </div>
+
+    <div
+      id="historyList"
+      class="history-list"
+    ></div>
+
+  </div>
+
+</div>
+
+
 <script>
 
 /* ==========================================================
@@ -727,6 +1027,9 @@ const BASE_CACHE_TIME_KEY =
 
 const PENDING_WRITES_KEY =
 'allauch_pending_writes_v5';
+
+const DAILY_HISTORY_KEY =
+'allauch_daily_history_v2';
 
 
 /* ==========================================================
@@ -2294,16 +2597,6 @@ function scheduleGeocode(
     GEOCODE_STALE_INTERVAL;
 
 
-  /*
-    Il faut :
-    - avoir bougé suffisamment
-    OU
-    - ne pas avoir eu de géocodage depuis longtemps.
-
-    Cela permet aussi d'obtenir la deuxième confirmation
-    même lorsqu'on reste presque immobile.
-  */
-
   if (
     !force &&
     !movedEnough &&
@@ -2666,10 +2959,6 @@ async function runGeocode(
     );
 
 
-    /*
-      Une seule nouvelle tentative.
-    */
-
     if (
       !isRetry &&
       !manualMode
@@ -2794,10 +3083,6 @@ function detectStreet(
   }
 
 
-  /*
-    Rue déjà active.
-  */
-
   if (
     activeEntry &&
     String(
@@ -2821,10 +3106,6 @@ function detectStreet(
 
   }
 
-
-  /*
-    Deux confirmations avant changement automatique.
-  */
 
   if (
     String(
@@ -3163,11 +3444,6 @@ function displayActiveStreet() {
     false;
 
 
-  /*
-    Ne pas écraser ce que l'utilisateur est en train
-    de saisir si le champ possède actuellement le focus.
-  */
-
   if (
     document.activeElement !==
     input
@@ -3290,6 +3566,12 @@ async function saveBAL() {
     activeEntry.id;
 
 
+  const previousBal =
+    Number(
+      activeEntry.bal
+    ) || 0;
+
+
   /*
     1.
     Mise à jour locale IMMÉDIATE.
@@ -3308,6 +3590,20 @@ async function saveBAL() {
     bal,
 
     fait
+
+  );
+
+
+  /*
+    Historique du jour :
+    on comptabilise uniquement la différence.
+  */
+
+  registerDailyActivity(
+
+    previousBal,
+
+    bal
 
   );
 
@@ -3634,10 +3930,6 @@ function clearManualSelection() {
   );
 
 
-  /*
-    Force une nouvelle lecture immédiate.
-  */
-
   lastGeocodeAttemptTime =
     0;
 
@@ -3684,20 +3976,10 @@ document.addEventListener(
       'visible'
     ) {
 
-      /*
-        L'utilisateur revient dans l'app.
-        On synchronise Google immédiatement.
-      */
-
       fullSync(
         false
       );
 
-
-      /*
-        Et on relance la position GPS immédiatement
-        si on est en mode automatique.
-      */
 
       if (
         !manualMode &&
@@ -3731,12 +4013,6 @@ window.addEventListener(
   'online',
 
   () => {
-
-    /*
-      Réseau revenu :
-      on envoie les modifications retenues
-      puis on récupère la base Google.
-    */
 
     fullSync(
       false
@@ -3847,8 +4123,497 @@ function setSaveStatus(
 
 
 /* ==========================================================
+   HISTORIQUE BAL LOCAL
+========================================================== */
+
+function getLocalDateKey(
+  date = new Date()
+) {
+
+  const year =
+    date.getFullYear();
+
+
+  const month =
+    String(
+      date.getMonth() + 1
+    )
+    .padStart(
+      2,
+      '0'
+    );
+
+
+  const day =
+    String(
+      date.getDate()
+    )
+    .padStart(
+      2,
+      '0'
+    );
+
+
+  return (
+    year +
+    '-' +
+    month +
+    '-' +
+    day
+  );
+
+}
+
+
+/* ==========================================================
+   LIRE L'HISTORIQUE
+========================================================== */
+
+function getDailyHistory() {
+
+  try {
+
+    const raw =
+      localStorage.getItem(
+        DAILY_HISTORY_KEY
+      );
+
+
+    if (
+      !raw
+    ) {
+
+      return {};
+
+    }
+
+
+    const data =
+      JSON.parse(
+        raw
+      );
+
+
+    if (
+      !data ||
+      typeof data !==
+      'object'
+    ) {
+
+      return {};
+
+    }
+
+
+    return data;
+
+  }
+
+  catch(e) {
+
+    return {};
+
+  }
+
+}
+
+
+/* ==========================================================
+   SAUVEGARDER L'HISTORIQUE
+========================================================== */
+
+function saveDailyHistory(
+  history
+) {
+
+  try {
+
+    localStorage.setItem(
+
+      DAILY_HISTORY_KEY,
+
+      JSON.stringify(
+        history
+      )
+
+    );
+
+  }
+
+  catch(e) {
+
+    console.warn(
+      'Historique impossible à sauvegarder',
+      e
+    );
+
+  }
+
+}
+
+
+/* ==========================================================
+   AJOUTER AU COMPTEUR DU JOUR
+========================================================== */
+
+function registerDailyActivity(
+  oldBal,
+  newBal
+) {
+
+  const difference =
+    Number(newBal) -
+    Number(oldBal);
+
+
+  if (
+    difference === 0
+  ) {
+
+    return;
+
+  }
+
+
+  const history =
+    getDailyHistory();
+
+
+  const today =
+    getLocalDateKey();
+
+
+  if (
+    history[
+      today
+    ] === undefined
+  ) {
+
+    history[
+      today
+    ] = 0;
+
+  }
+
+
+  history[
+    today
+  ] =
+
+    Number(
+      history[
+        today
+      ] || 0
+    )
+
+    +
+
+    difference;
+
+
+  /*
+    On empêche le compteur journalier
+    de devenir négatif après une correction.
+  */
+
+  if (
+    history[
+      today
+    ] < 0
+  ) {
+
+    history[
+      today
+    ] = 0;
+
+  }
+
+
+  saveDailyHistory(
+    history
+  );
+
+
+  refreshTodayBal();
+
+}
+
+
+/* ==========================================================
+   RAFRAÎCHIR LE COMPTEUR DU JOUR
+========================================================== */
+
+function refreshTodayBal() {
+
+  const history =
+    getDailyHistory();
+
+
+  const today =
+    getLocalDateKey();
+
+
+  const value =
+    Number(
+      history[
+        today
+      ] || 0
+    );
+
+
+  const element =
+    document
+      .getElementById(
+        'todayBal'
+      );
+
+
+  if (
+    element
+  ) {
+
+    element.innerHTML =
+
+      value +
+
+      ' <span>BAL</span>';
+
+  }
+
+}
+
+
+/* ==========================================================
+   OUVRIR L'HISTORIQUE
+========================================================== */
+
+function openHistory() {
+
+  renderHistory();
+
+
+  document
+    .getElementById(
+      'historyOverlay'
+    )
+    .style
+    .display =
+      'flex';
+
+
+  document.body.style.overflow =
+    'hidden';
+
+}
+
+
+/* ==========================================================
+   FERMER L'HISTORIQUE
+========================================================== */
+
+function closeHistory() {
+
+  document
+    .getElementById(
+      'historyOverlay'
+    )
+    .style
+    .display =
+      'none';
+
+
+  document.body.style.overflow =
+    '';
+
+}
+
+
+function closeHistoryFromOverlay(
+  event
+) {
+
+  if (
+    event.target.id ===
+    'historyOverlay'
+  ) {
+
+    closeHistory();
+
+  }
+
+}
+
+
+/* ==========================================================
+   AFFICHER L'HISTORIQUE
+========================================================== */
+
+function renderHistory() {
+
+  const history =
+    getDailyHistory();
+
+
+  const container =
+    document
+      .getElementById(
+        'historyList'
+      );
+
+
+  container.innerHTML =
+    '';
+
+
+  const dates =
+    Object.keys(
+      history
+    )
+
+    .sort(
+      (
+        a,
+        b
+      ) =>
+        b.localeCompare(
+          a
+        )
+    );
+
+
+  if (
+    dates.length === 0
+  ) {
+
+    container.innerHTML =
+
+      '<div class="history-empty">' +
+
+      'Aucun historique pour le moment.' +
+
+      '</div>';
+
+
+    return;
+
+  }
+
+
+  dates.forEach(
+    dateKey => {
+
+
+      const parts =
+        dateKey.split(
+          '-'
+        );
+
+
+      const date =
+        new Date(
+
+          Number(
+            parts[
+              0
+            ]
+          ),
+
+          Number(
+            parts[
+              1
+            ]
+          ) - 1,
+
+          Number(
+            parts[
+              2
+            ]
+          )
+
+        );
+
+
+      const label =
+        date.toLocaleDateString(
+
+          'fr-FR',
+
+          {
+
+            weekday:
+              'long',
+
+            day:
+              '2-digit',
+
+            month:
+              'long',
+
+            year:
+              'numeric'
+
+          }
+
+        );
+
+
+      const value =
+        Number(
+          history[
+            dateKey
+          ] || 0
+        );
+
+
+      const row =
+        document
+          .createElement(
+            'div'
+          );
+
+
+      row.className =
+        'history-row';
+
+
+      row.innerHTML =
+
+        '<div class="history-date">' +
+
+        escapeHtml(
+          label
+        )
+
+        +
+
+        '</div>' +
+
+        '<div class="history-value">' +
+
+        value +
+
+        ' <span>BAL</span>' +
+
+        '</div>';
+
+
+      container
+        .appendChild(
+          row
+        );
+
+    }
+
+  );
+
+}
+
+
+/* ==========================================================
    DÉMARRAGE
 ========================================================== */
+
+refreshTodayBal();
 
 loadBase();
 
