@@ -902,6 +902,9 @@ const PENDING_WRITES_KEY =
 const DAILY_HISTORY_KEY =
   'allauch_daily_history_v2';
 
+const DAILY_STREETS_KEY =
+  'allauch_daily_streets_v1';
+
 
 /* ==========================================================
    VARIABLES
@@ -2234,6 +2237,18 @@ async function saveBAL() {
     ) || 0;
 
 
+  /*
+    On mémorise le nombre de BAL présent
+    AVANT la première modification
+    de cette rue aujourd'hui.
+  */
+
+  registerStreetBaseline(
+    currentId,
+    previousBal
+  );
+
+
   const fait =
     bal > 0
       ? 'Oui'
@@ -2255,8 +2270,8 @@ async function saveBAL() {
     Mise à jour du compteur du jour.
   */
 
-  registerDailyActivity(
-    previousBal,
+  updateTodayStreet(
+    currentId,
     bal
   );
 
@@ -2480,7 +2495,7 @@ function setSaveStatus(
 
 
 /* ==========================================================
-   HISTORIQUE LOCAL
+   DATE LOCALE
 ========================================================== */
 
 function getLocalDateKey(
@@ -2516,6 +2531,10 @@ function getLocalDateKey(
 
 }
 
+
+/* ==========================================================
+   HISTORIQUE
+========================================================== */
 
 function getDailyHistory() {
 
@@ -2593,82 +2612,378 @@ function saveDailyHistory(
 
 
 /* ==========================================================
-   COMPTEUR DU JOUR
+   SUIVI DES RUES MODIFIÉES AUJOURD'HUI
 ========================================================== */
 
-function registerDailyActivity(
-  oldBal,
-  newBal
-) {
+function getDailyStreets() {
 
-  const difference =
-    Number(newBal) -
-    Number(oldBal);
+  try {
 
-  if (
-    difference === 0
-  ) {
+    const raw =
+      localStorage.getItem(
+        DAILY_STREETS_KEY
+      );
 
-    return;
+    if (
+      !raw
+    ) {
+
+      return {};
+
+    }
+
+    const data =
+      JSON.parse(
+        raw
+      );
+
+    if (
+      !data ||
+      typeof data !==
+      'object'
+    ) {
+
+      return {};
+
+    }
+
+    return data;
 
   }
 
-  const history =
-    getDailyHistory();
+  catch(e) {
+
+    return {};
+
+  }
+
+}
+
+
+function saveDailyStreets(
+  data
+) {
+
+  try {
+
+    localStorage.setItem(
+
+      DAILY_STREETS_KEY,
+
+      JSON.stringify(
+        data
+      )
+
+    );
+
+  }
+
+  catch(e) {
+
+    console.warn(
+      'Suivi journalier impossible à sauvegarder',
+      e
+    );
+
+  }
+
+}
+
+
+/* ==========================================================
+   VALEUR DE DÉPART D'UNE RUE
+========================================================== */
+
+function registerStreetBaseline(
+  id,
+  currentBal
+) {
+
+  const data =
+    getDailyStreets();
 
   const today =
     getLocalDateKey();
 
+
+  /*
+    On ne conserve dans ce stockage
+    que la journée en cours.
+  */
+
+  Object.keys(
+    data
+  ).forEach(
+    dateKey => {
+
+      if (
+        dateKey !== today
+      ) {
+
+        delete data[
+          dateKey
+        ];
+
+      }
+
+    }
+  );
+
+
   if (
-    history[today] ===
-    undefined
+    !data[today]
   ) {
 
-    history[today] = 0;
+    data[today] = {};
 
   }
+
+
+  const streetId =
+    String(id);
+
+
+  /*
+    Très important :
+    la valeur de référence n'est définie
+    qu'une seule fois dans la journée.
+
+    Exemple :
+    rue = 40 au début
+
+    40 -> 38
+    baseline reste 40
+
+    38 -> 45
+    baseline reste toujours 40
+  */
+
+  if (
+    !data[today][streetId]
+  ) {
+
+    data[today][streetId] = {
+
+      baseline:
+        Number(
+          currentBal
+        ) || 0,
+
+      current:
+        Number(
+          currentBal
+        ) || 0
+
+    };
+
+  }
+
+
+  saveDailyStreets(
+    data
+  );
+
+}
+
+
+/* ==========================================================
+   METTRE À JOUR UNE RUE POUR LE COMPTEUR DU JOUR
+========================================================== */
+
+function updateTodayStreet(
+  id,
+  newBal
+) {
+
+  const data =
+    getDailyStreets();
+
+  const today =
+    getLocalDateKey();
+
+  const streetId =
+    String(id);
+
+
+  if (
+    !data[today]
+  ) {
+
+    data[today] = {};
+
+  }
+
+
+  if (
+    !data[today][streetId]
+  ) {
+
+    data[today][streetId] = {
+
+      baseline:
+        0,
+
+      current:
+        Number(
+          newBal
+        ) || 0
+
+    };
+
+  }
+
+
+  data[today][streetId].current =
+    Number(
+      newBal
+    ) || 0;
+
+
+  saveDailyStreets(
+    data
+  );
+
+
+  recalculateTodayTotal();
+
+}
+
+
+/* ==========================================================
+   RECALCUL DU TOTAL DU JOUR
+========================================================== */
+
+function recalculateTodayTotal() {
+
+  const data =
+    getDailyStreets();
+
+  const today =
+    getLocalDateKey();
+
+  const streets =
+    data[today] || {};
+
+
+  let total = 0;
+
+
+  Object.values(
+    streets
+  ).forEach(
+    street => {
+
+      const baseline =
+        Number(
+          street.baseline
+        ) || 0;
+
+      const current =
+        Number(
+          street.current
+        ) || 0;
+
+
+      /*
+        Seules les BAL ajoutées
+        au-dessus de la valeur de départ
+        sont comptabilisées.
+
+        Exemple :
+
+        départ 40 -> 38 = 0
+        départ 40 -> 40 = 0
+        départ 40 -> 45 = 5
+
+        départ 0 -> 40 = 40
+        départ 0 -> 38 = 38
+      */
+
+      const contribution =
+        Math.max(
+          0,
+          current - baseline
+        );
+
+
+      total +=
+        contribution;
+
+    }
+  );
+
+
+  /*
+    On enregistre également le total
+    dans l'historique.
+  */
+
+  const history =
+    getDailyHistory();
 
   history[today] =
-    Number(
-      history[today] || 0
-    ) +
-    difference;
-
-
-  if (
-    history[today] < 0
-  ) {
-
-    history[today] = 0;
-
-  }
+    total;
 
   saveDailyHistory(
     history
   );
+
 
   refreshTodayBal();
 
 }
 
 
+/* ==========================================================
+   AFFICHAGE DU COMPTEUR DU JOUR
+========================================================== */
+
 function refreshTodayBal() {
 
-  const history =
-    getDailyHistory();
+  const data =
+    getDailyStreets();
 
   const today =
     getLocalDateKey();
 
-  const value =
-    Number(
-      history[today] || 0
-    );
+  const streets =
+    data[today] || {};
+
+
+  let value = 0;
+
+
+  Object.values(
+    streets
+  ).forEach(
+    street => {
+
+      const baseline =
+        Number(
+          street.baseline
+        ) || 0;
+
+      const current =
+        Number(
+          street.current
+        ) || 0;
+
+
+      value +=
+        Math.max(
+          0,
+          current - baseline
+        );
+
+    }
+  );
+
 
   const element =
     document.getElementById(
       'todayBal'
     );
+
 
   if (
     element
@@ -2684,7 +2999,7 @@ function refreshTodayBal() {
 
 
 /* ==========================================================
-   HISTORIQUE
+   OUVRIR HISTORIQUE
 ========================================================== */
 
 function openHistory() {
@@ -2701,6 +3016,10 @@ function openHistory() {
 
 }
 
+
+/* ==========================================================
+   FERMER HISTORIQUE
+========================================================== */
 
 function closeHistory() {
 
@@ -2730,6 +3049,10 @@ function closeHistoryFromOverlay(
 
 }
 
+
+/* ==========================================================
+   AFFICHER HISTORIQUE
+========================================================== */
 
 function renderHistory() {
 
