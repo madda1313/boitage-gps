@@ -151,6 +151,77 @@ body {
   color: var(--gold);
 }
 
+/* ==========================================================
+   RECHERCHE
+========================================================== */
+
+.search-wrapper {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  pointer-events: none;
+}
+
+#searchInput {
+  height: 56px;
+  padding: 0 15px 0 44px;
+}
+
+.search-results {
+  display: none;
+  max-height: 330px;
+  margin-top: 7px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 12px 30px rgba(20,45,32,.1);
+}
+
+.result {
+  padding: 13px 14px;
+  border-bottom: 1px solid rgba(6,75,46,.08);
+  cursor: pointer;
+}
+
+.result:last-child {
+  border-bottom: 0;
+}
+
+.result:active {
+  background: var(--green-soft);
+}
+
+.result strong {
+  display: block;
+  color: var(--green-dark);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.result small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* ==========================================================
+   RUE ACTIVE
+========================================================== */
+
 .street-card {
   position: relative;
   overflow: hidden;
@@ -251,6 +322,10 @@ body {
   letter-spacing: 2px;
 }
 
+/* ==========================================================
+   FORMULAIRES
+========================================================== */
+
 input {
   appearance: none;
   -webkit-appearance: none;
@@ -330,79 +405,6 @@ button {
   box-shadow: none;
 }
 
-.secondary {
-  height: 48px;
-  margin-top: 12px;
-  border-radius: 12px;
-  background: var(--green-soft);
-  color: var(--green);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .4px;
-}
-
-.search-wrapper {
-  position: relative;
-}
-
-.search-icon {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 16px;
-  pointer-events: none;
-}
-
-#searchInput {
-  height: 56px;
-  padding: 0 15px 0 44px;
-}
-
-.search-results {
-  display: none;
-  max-height: 330px;
-  margin-top: 7px;
-  overflow-y: auto;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: white;
-  box-shadow: 0 12px 30px rgba(20,45,32,.1);
-}
-
-.result {
-  padding: 13px 14px;
-  border-bottom: 1px solid rgba(6,75,46,.08);
-}
-
-.result:last-child {
-  border-bottom: 0;
-}
-
-.result:active {
-  background: var(--green-soft);
-}
-
-.result strong {
-  display: block;
-  color: var(--green-dark);
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.result small {
-  display: block;
-  margin-top: 4px;
-  color: var(--muted);
-  font-size: 11px;
-}
-
 .status {
   margin-top: 11px;
   text-align: center;
@@ -422,70 +424,8 @@ button {
   color: #A85858;
 }
 
-details {
-  margin-top: 20px;
-  border-top: 1px solid rgba(6,75,46,.1);
-  color: var(--muted);
-}
-
-summary {
-  padding: 18px 2px 8px;
-  cursor: pointer;
-  list-style: none;
-  text-align: center;
-  color: var(--muted);
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
-
-summary::-webkit-details-marker {
-  display: none;
-}
-
-.gps-box {
-  padding: 13px 5px;
-  font-size: 11px;
-  line-height: 1.8;
-}
-
-.footer {
-  padding: 15px 0 25px;
-  text-align: center;
-  color: rgba(6,75,46,.45);
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size: 11px;
-}
-
-@media (max-width: 430px) {
-
-  .app {
-    padding-left: 13px;
-    padding-right: 13px;
-  }
-
-  .brand {
-    padding-top: 17px;
-    padding-bottom: 21px;
-  }
-
-  .street-name {
-    font-size: 27px;
-  }
-
-  .card {
-    padding: 18px;
-  }
-}
-
-
 /* ==========================================================
-   BAL DU JOUR + POPUP HISTORIQUE
+   BAL DU JOUR
 ========================================================== */
 
 .today-bal {
@@ -547,6 +487,10 @@ summary::-webkit-details-marker {
   text-transform: uppercase;
 }
 
+/* ==========================================================
+   HISTORIQUE
+========================================================== */
+
 .history-overlay {
   display: none;
   position: fixed;
@@ -558,14 +502,10 @@ summary::-webkit-details-marker {
     18px
     calc(25px + env(safe-area-inset-bottom));
 
-  background:
-    rgba(3,38,24,.43);
+  background: rgba(3,38,24,.43);
 
-  backdrop-filter:
-    blur(7px);
-
-  -webkit-backdrop-filter:
-    blur(7px);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
 
   align-items: center;
   justify-content: center;
@@ -575,29 +515,18 @@ summary::-webkit-details-marker {
   width: 100%;
   max-width: 470px;
   max-height: 78vh;
-
   overflow: hidden;
-
   background: var(--cream-card);
-
-  border:
-    1px solid rgba(185,154,94,.35);
-
+  border: 1px solid rgba(185,154,94,.35);
   border-radius: 20px;
-
-  box-shadow:
-    0 25px 70px rgba(0,30,18,.25);
+  box-shadow: 0 25px 70px rgba(0,30,18,.25);
 }
 
 .history-modal-header {
   position: relative;
-
   padding: 23px 50px 19px;
-
   text-align: center;
-
-  border-bottom:
-    1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 .history-modal-title {
@@ -607,64 +536,44 @@ summary::-webkit-details-marker {
     serif;
 
   color: var(--green-dark);
-
   font-size: 23px;
 }
 
 .history-modal-subtitle {
   margin-top: 5px;
-
   color: var(--gold);
-
   font-size: 9px;
   font-weight: 700;
-
   letter-spacing: 1.7px;
-
   text-transform: uppercase;
 }
 
 .history-close {
   position: absolute;
-
   right: 14px;
   top: 14px;
-
   width: 34px;
   height: 34px;
-
   border-radius: 50%;
-
-  background:
-    var(--green-soft);
-
-  color:
-    var(--green);
-
+  background: var(--green-soft);
+  color: var(--green);
   font-size: 20px;
-
   line-height: 34px;
-
   padding: 0;
 }
 
 .history-list {
   max-height: 55vh;
   overflow-y: auto;
-
   padding: 8px 20px 17px;
 }
 
 .history-row {
   display: flex;
-
   align-items: center;
   justify-content: space-between;
-
   padding: 15px 3px;
-
-  border-bottom:
-    1px solid rgba(6,75,46,.08);
+  border-bottom: 1px solid rgba(6,75,46,.08);
 }
 
 .history-row:last-child {
@@ -677,15 +586,12 @@ summary::-webkit-details-marker {
     "Times New Roman",
     serif;
 
-  color:
-    var(--green-dark);
-
+  color: var(--green-dark);
   font-size: 15px;
 }
 
 .history-value {
-  color:
-    var(--green);
+  color: var(--green);
 
   font-family:
     Georgia,
@@ -703,23 +609,50 @@ summary::-webkit-details-marker {
     Arial,
     sans-serif;
 
-  color:
-    var(--muted);
-
+  color: var(--muted);
   font-size: 10px;
-
   font-weight: 700;
 }
 
 .history-empty {
   padding: 35px 10px;
-
   text-align: center;
-
-  color:
-    var(--muted);
-
+  color: var(--muted);
   font-size: 12px;
+}
+
+.footer {
+  padding: 15px 0 25px;
+  text-align: center;
+  color: rgba(6,75,46,.45);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 11px;
+}
+
+@media (max-width: 430px) {
+
+  .app {
+    padding-left: 13px;
+    padding-right: 13px;
+  }
+
+  .brand {
+    padding-top: 17px;
+    padding-bottom: 21px;
+  }
+
+  .street-name {
+    font-size: 27px;
+  }
+
+  .card {
+    padding: 18px;
+  }
 }
 
 </style>
@@ -749,20 +682,54 @@ summary::-webkit-details-marker {
 
   <div
     id="connection"
-    class="connection"
+    class="connection wait"
   >
     <span class="status-dot"></span>
 
     <span id="globalStatus">
-      Chargement de la base…
+      Chargement des rues…
     </span>
   </div>
 
 
+  <!-- RECHERCHE DE RUE -->
+
+  <section class="card">
+
+    <div class="section-title">
+      Rechercher une rue
+    </div>
+
+    <div class="search-wrapper">
+
+      <div class="search-icon">
+        ⌕
+      </div>
+
+      <input
+        id="searchInput"
+        type="text"
+        placeholder="Entrez le nom de la rue…"
+        autocomplete="off"
+        oninput="searchStreet()"
+      >
+
+    </div>
+
+    <div
+      id="searchResults"
+      class="search-results"
+    ></div>
+
+  </section>
+
+
+  <!-- RUE ACTIVE -->
+
   <section class="card street-card">
 
     <div class="section-title">
-      Rue active
+      Rue sélectionnée
     </div>
 
     <div
@@ -776,7 +743,7 @@ summary::-webkit-details-marker {
       id="streetMeta"
       class="street-meta"
     >
-      En attente du GPS…
+      Recherchez une rue ci-dessus
     </div>
 
     <div id="faitTag"></div>
@@ -803,6 +770,8 @@ summary::-webkit-details-marker {
 
   </section>
 
+
+  <!-- ENREGISTREMENT -->
 
   <section class="card">
 
@@ -863,87 +832,14 @@ summary::-webkit-details-marker {
   </section>
 
 
-  <section class="card">
-
-    <div class="section-title">
-      Sélection manuelle
-    </div>
-
-    <div class="search-wrapper">
-
-      <div class="search-icon">
-        ⌕
-      </div>
-
-      <input
-        id="searchInput"
-        type="text"
-        placeholder="Rechercher une rue…"
-        autocomplete="off"
-        oninput="searchStreet()"
-      >
-
-    </div>
-
-    <div
-      id="searchResults"
-      class="search-results"
-    ></div>
-
-    <button
-      class="secondary"
-      onclick="clearManualSelection()"
-    >
-      Réactiver la détection GPS
-    </button>
-
-  </section>
-
-
-  <details>
-
-    <summary>
-      Informations GPS
-    </summary>
-
-    <div class="gps-box">
-
-      <div>
-        Latitude :
-        <span id="lat">—</span>
-      </div>
-
-      <div>
-        Longitude :
-        <span id="lng">—</span>
-      </div>
-
-      <div>
-        Précision :
-        <span id="accuracy">—</span>
-      </div>
-
-      <div>
-        Détection :
-        <span id="rawStreet">—</span>
-      </div>
-
-      <div>
-        Dernière synchro :
-        <span id="syncInfo">—</span>
-      </div>
-
-    </div>
-
-  </details>
-
-
   <footer class="footer">
     Immobilière du Golf
   </footer>
 
 </div>
 
+
+<!-- POPUP HISTORIQUE -->
 
 <div
   id="historyOverlay"
@@ -989,47 +885,22 @@ summary::-webkit-details-marker {
 ========================================================== */
 
 const API_URL =
-'https://script.google.com/macros/s/AKfycbyIGyX1UivU6zgNL3nvzxqBKaW4c_MLSVWCzk9fgzxgX6XZLEDfvuau7mKPM0phVS4Y/exec';
+  'https://script.google.com/macros/s/AKfycbyIGyX1UivU6zgNL3nvzxqBKaW4c_MLSVWCzk9fgzxgX6XZLEDfvuau7mKPM0phVS4Y/exec';
 
-
-/*
-  Synchronisation complète avec Google Sheets.
-*/
 const FULL_SYNC_INTERVAL = 5 * 60 * 1000;
 
-
-/*
-  GPS / Nominatim.
-*/
-const GEOCODE_INTERVAL = 5000;
-const GEOCODE_STALE_INTERVAL = 10000;
-const GEOCODE_MIN_DISTANCE = 8;
-const GEOCODE_RETRY_DELAY = 1800;
-const REQUIRED_CONFIRMATIONS = 2;
-
-
-/*
-  Apps Script.
-*/
 const API_TIMEOUT = 12000;
 const API_RETRIES = 2;
 const API_RETRY_DELAY = 900;
 
-
-/*
-  Stockage local.
-*/
 const BASE_CACHE_KEY =
-'allauch_base_rues_v5';
-
-const BASE_CACHE_TIME_KEY =
-'allauch_base_rues_v5_time';
+  'allauch_base_rues_v6';
 
 const PENDING_WRITES_KEY =
-'allauch_pending_writes_v5';
+  'allauch_pending_writes_v6';
 
 const DAILY_HISTORY_KEY =
-'allauch_daily_history_v2';
+  'allauch_daily_history_v2';
 
 
 /* ==========================================================
@@ -1037,51 +908,16 @@ const DAILY_HISTORY_KEY =
 ========================================================== */
 
 let baseRues = [];
-
 let activeEntry = null;
 
-let manualMode = false;
-
-let gpsWatchId = null;
-
-
-/*
-  GPS.
-*/
-let lastGpsLat = null;
-let lastGpsLng = null;
-
-let lastGeocodeLat = null;
-let lastGeocodeLng = null;
-
-let lastGeocodeAttemptTime = 0;
-let lastGeocodeSuccessTime = 0;
-
-let geocodeRunning = false;
-let geocodePending = false;
-let retryTimer = null;
-
-
-/*
-  Détection rue.
-*/
-let candidateId = null;
-let candidateCount = 0;
-
-
-/*
-  Synchronisation Google.
-*/
 let fullSyncRunning = false;
 let pendingFlushRunning = false;
-
 let syncTimer = null;
-
 let saving = false;
 
 
 /* ==========================================================
-   NORMALISATION
+   NORMALISATION DES NOMS DE RUE
 ========================================================== */
 
 function normalizeText(text) {
@@ -1138,7 +974,7 @@ function sleep(ms) {
 
 
 /* ==========================================================
-   JSONP
+   APPEL GOOGLE APPS SCRIPT JSONP
 ========================================================== */
 
 function jsonpOnce(
@@ -1147,20 +983,15 @@ function jsonpOnce(
 ) {
 
   return new Promise(
-    (
-      resolve,
-      reject
-    ) => {
+    (resolve, reject) => {
 
       const callbackName =
         'jsonp_' +
         Date.now() +
         '_' +
         Math.floor(
-          Math.random() *
-          1000000
+          Math.random() * 1000000
         );
-
 
       const query =
         new URLSearchParams({
@@ -1175,30 +1006,22 @@ function jsonpOnce(
 
         }).toString();
 
-
       const script =
-        document
-          .createElement(
-            'script'
-          );
+        document.createElement(
+          'script'
+        );
 
-
-      let finished =
-        false;
-
+      let finished = false;
 
       const timeout =
         setTimeout(
           () => {
 
-            if (
-              finished
-            ) {
+            if (finished) {
               return;
             }
 
-            finished =
-              true;
+            finished = true;
 
             cleanup();
 
@@ -1223,11 +1046,9 @@ function jsonpOnce(
           script.parentNode
         ) {
 
-          script
-            .parentNode
-            .removeChild(
-              script
-            );
+          script.parentNode.removeChild(
+            script
+          );
 
         }
 
@@ -1255,14 +1076,11 @@ function jsonpOnce(
       ] =
         function(data) {
 
-          if (
-            finished
-          ) {
+          if (finished) {
             return;
           }
 
-          finished =
-            true;
+          finished = true;
 
           cleanup();
 
@@ -1276,14 +1094,11 @@ function jsonpOnce(
       script.onerror =
         function() {
 
-          if (
-            finished
-          ) {
+          if (finished) {
             return;
           }
 
-          finished =
-            true;
+          finished = true;
 
           cleanup();
 
@@ -1296,20 +1111,16 @@ function jsonpOnce(
         };
 
 
-      script.async =
-        true;
-
+      script.async = true;
 
       script.src =
         API_URL +
         '?' +
         query;
 
-
-      document.head
-        .appendChild(
-          script
-        );
+      document.head.appendChild(
+        script
+      );
 
     }
   );
@@ -1317,7 +1128,7 @@ function jsonpOnce(
 
 
 /* ==========================================================
-   JSONP AVEC RETRY
+   JSONP AVEC NOUVELLE TENTATIVE
 ========================================================== */
 
 async function jsonp(
@@ -1329,14 +1140,11 @@ async function jsonp(
     options.retries ??
     API_RETRIES;
 
-
   const timeout =
     options.timeout ??
     API_TIMEOUT;
 
-
-  let lastError =
-    null;
+  let lastError = null;
 
 
   for (
@@ -1353,7 +1161,6 @@ async function jsonp(
           timeout
         );
 
-
       if (
         !data ||
         data.ok === false
@@ -1366,31 +1173,23 @@ async function jsonp(
 
       }
 
-
       return data;
 
     }
 
     catch(err) {
 
-      lastError =
-        err;
-
+      lastError = err;
 
       if (
-        attempt <
-        retries
+        attempt < retries
       ) {
 
         await sleep(
-
           API_RETRY_DELAY *
-
           (
-            attempt +
-            1
+            attempt + 1
           )
-
         );
 
       }
@@ -1398,7 +1197,6 @@ async function jsonp(
     }
 
   }
-
 
   throw (
     lastError ||
@@ -1410,7 +1208,7 @@ async function jsonp(
 
 
 /* ==========================================================
-   CACHE BASE
+   CACHE LOCAL DES RUES
 ========================================================== */
 
 function saveBaseCache() {
@@ -1418,24 +1216,10 @@ function saveBaseCache() {
   try {
 
     localStorage.setItem(
-
       BASE_CACHE_KEY,
-
       JSON.stringify(
         baseRues
       )
-
-    );
-
-
-    localStorage.setItem(
-
-      BASE_CACHE_TIME_KEY,
-
-      String(
-        Date.now()
-      )
-
     );
 
   }
@@ -1448,7 +1232,6 @@ function saveBaseCache() {
     );
 
   }
-
 }
 
 
@@ -1461,27 +1244,17 @@ function loadBaseCache() {
         BASE_CACHE_KEY
       );
 
-
-    if (
-      !raw
-    ) {
-
+    if (!raw) {
       return false;
-
     }
-
 
     const cached =
       JSON.parse(
         raw
       );
 
-
     if (
-      !Array.isArray(
-        cached
-      )
-      ||
+      !Array.isArray(cached) ||
       cached.length === 0
     ) {
 
@@ -1489,10 +1262,7 @@ function loadBaseCache() {
 
     }
 
-
-    baseRues =
-      cached;
-
+    baseRues = cached;
 
     return true;
 
@@ -1503,12 +1273,11 @@ function loadBaseCache() {
     return false;
 
   }
-
 }
 
 
 /* ==========================================================
-   MODIFICATIONS EN ATTENTE
+   ÉCRITURES EN ATTENTE
 ========================================================== */
 
 function getPendingWrites() {
@@ -1520,32 +1289,23 @@ function getPendingWrites() {
         PENDING_WRITES_KEY
       );
 
-
-    if (
-      !raw
-    ) {
-
+    if (!raw) {
       return {};
-
     }
-
 
     const parsed =
       JSON.parse(
         raw
       );
 
-
     if (
       !parsed ||
-      typeof parsed !==
-      'object'
+      typeof parsed !== 'object'
     ) {
 
       return {};
 
     }
-
 
     return parsed;
 
@@ -1556,7 +1316,6 @@ function getPendingWrites() {
     return {};
 
   }
-
 }
 
 
@@ -1567,13 +1326,10 @@ function savePendingWrites(
   try {
 
     localStorage.setItem(
-
       PENDING_WRITES_KEY,
-
       JSON.stringify(
         pending
       )
-
     );
 
   }
@@ -1586,7 +1342,6 @@ function savePendingWrites(
     );
 
   }
-
 }
 
 
@@ -1597,7 +1352,6 @@ function queueBALWrite(
 
   const pending =
     getPendingWrites();
-
 
   pending[
     String(id)
@@ -1614,16 +1368,14 @@ function queueBALWrite(
 
   };
 
-
   savePendingWrites(
     pending
   );
-
 }
 
 
 /* ==========================================================
-   MISE À JOUR D'UNE RUE LOCALE
+   METTRE À JOUR UNE RUE LOCALEMENT
 ========================================================== */
 
 function updateLocalStreet(
@@ -1634,18 +1386,10 @@ function updateLocalStreet(
 
   const index =
     baseRues.findIndex(
-
       item =>
-        String(
-          item.id
-        )
-        ===
-        String(
-          id
-        )
-
+        String(item.id) ===
+        String(id)
     );
-
 
   if (
     index === -1
@@ -1655,54 +1399,35 @@ function updateLocalStreet(
 
   }
 
-
-  baseRues[
-    index
-  ].bal =
+  baseRues[index].bal =
     Number(bal) || 0;
 
+  if (fait) {
 
-  if (
-    fait
-  ) {
-
-    baseRues[
-      index
-    ].fait =
+    baseRues[index].fait =
       fait;
 
   }
 
-
   if (
     activeEntry &&
-    String(
-      activeEntry.id
-    )
-    ===
-    String(
-      id
-    )
+    String(activeEntry.id) ===
+    String(id)
   ) {
 
     activeEntry.bal =
       Number(bal) || 0;
 
-
-    if (
-      fait
-    ) {
+    if (fait) {
 
       activeEntry.fait =
         fait;
 
     }
 
-
     displayActiveStreet();
 
   }
-
 }
 
 
@@ -1713,15 +1438,7 @@ function updateLocalStreet(
 async function flushPendingWrites() {
 
   if (
-    pendingFlushRunning
-  ) {
-
-    return;
-
-  }
-
-
-  if (
+    pendingFlushRunning ||
     !navigator.onLine
   ) {
 
@@ -1729,16 +1446,13 @@ async function flushPendingWrites() {
 
   }
 
-
   const pending =
     getPendingWrites();
-
 
   const entries =
     Object.values(
       pending
     );
-
 
   if (
     entries.length === 0
@@ -1748,42 +1462,22 @@ async function flushPendingWrites() {
 
   }
 
-
-  pendingFlushRunning =
-    true;
-
+  pendingFlushRunning = true;
 
   try {
-
-    /*
-      On envoie les modifications une par une.
-
-      Important :
-      si la même rue a été modifiée plusieurs fois,
-      la file ne garde déjà que la dernière valeur.
-    */
 
     for (
       const entry
       of entries
     ) {
 
-      /*
-        Vérifie que cette version de l'écriture
-        est toujours la plus récente.
-      */
-
       const currentPending =
         getPendingWrites();
 
-
       const latest =
         currentPending[
-          String(
-            entry.id
-          )
+          String(entry.id)
         ];
-
 
       if (
         !latest ||
@@ -1794,7 +1488,6 @@ async function flushPendingWrites() {
         continue;
 
       }
-
 
       try {
 
@@ -1813,32 +1506,19 @@ async function flushPendingWrites() {
             },
 
             {
-              retries:
-                2,
-
-              timeout:
-                12000
+              retries: 2,
+              timeout: 12000
             }
 
           );
 
-
-        /*
-          On vérifie encore que personne n'a modifié
-          cette rue localement pendant l'appel réseau.
-        */
-
         const afterCall =
           getPendingWrites();
 
-
         const current =
           afterCall[
-            String(
-              entry.id
-            )
+            String(entry.id)
           ];
-
 
         if (
           current &&
@@ -1847,16 +1527,12 @@ async function flushPendingWrites() {
         ) {
 
           delete afterCall[
-            String(
-              entry.id
-            )
+            String(entry.id)
           ];
-
 
           savePendingWrites(
             afterCall
           );
-
 
           updateLocalStreet(
 
@@ -1866,13 +1542,12 @@ async function flushPendingWrites() {
               ? result.bal
               : entry.bal,
 
-            result.fait
-              ||
-              (
-                entry.bal > 0
-                  ? 'Oui'
-                  : undefined
-              )
+            result.fait ||
+            (
+              entry.bal > 0
+                ? 'Oui'
+                : undefined
+            )
 
           );
 
@@ -1881,11 +1556,6 @@ async function flushPendingWrites() {
       }
 
       catch(err) {
-
-        /*
-          On ne supprime rien.
-          L'écriture reste stockée pour plus tard.
-        */
 
         console.warn(
           'Écriture conservée en attente :',
@@ -1897,18 +1567,15 @@ async function flushPendingWrites() {
 
     }
 
-
     saveBaseCache();
 
   }
 
   finally {
 
-    pendingFlushRunning =
-      false;
+    pendingFlushRunning = false;
 
   }
-
 }
 
 
@@ -1923,64 +1590,47 @@ function mergeRemoteBase(
   const pending =
     getPendingWrites();
 
-
   const localMap =
     new Map();
-
 
   baseRues.forEach(
     item => {
 
       localMap.set(
-        String(
-          item.id
-        ),
+        String(item.id),
         item
       );
 
     }
   );
 
-
   const merged = [];
-
 
   remoteRues.forEach(
     remote => {
 
       const id =
-        String(
-          remote.id
-        );
-
-
-      /*
-        Une modification locale non encore envoyée
-        est prioritaire temporairement.
-      */
+        String(remote.id);
 
       if (
-        pending[
-          id
-        ]
+        pending[id]
       ) {
 
         const local =
-          localMap.get(
-            id
-          );
+          localMap.get(id);
 
-
-        if (
-          local
-        ) {
+        if (local) {
 
           merged.push({
+
             ...remote,
+
             bal:
               local.bal,
+
             fait:
               local.fait
+
           });
 
         }
@@ -2006,15 +1656,7 @@ function mergeRemoteBase(
     }
   );
 
-
-  baseRues =
-    merged;
-
-
-  /*
-    Si la rue affichée est présente dans
-    la nouvelle base, on rafraîchit l'écran.
-  */
+  baseRues = merged;
 
   if (
     activeEntry
@@ -2022,27 +1664,16 @@ function mergeRemoteBase(
 
     const fresh =
       baseRues.find(
-
         item =>
-          String(
-            item.id
-          )
-          ===
-          String(
-            activeEntry.id
-          )
-
+          String(item.id) ===
+          String(activeEntry.id)
       );
 
-
-    if (
-      fresh
-    ) {
+    if (fresh) {
 
       activeEntry = {
         ...fresh
       };
-
 
       displayActiveStreet();
 
@@ -2050,14 +1681,13 @@ function mergeRemoteBase(
 
   }
 
-
   saveBaseCache();
 
 }
 
 
 /* ==========================================================
-   SYNCHRONISATION COMPLÈTE
+   SYNCHRONISATION GOOGLE
 ========================================================== */
 
 async function fullSync(
@@ -2065,15 +1695,7 @@ async function fullSync(
 ) {
 
   if (
-    fullSyncRunning
-  ) {
-
-    return;
-
-  }
-
-
-  if (
+    fullSyncRunning ||
     !navigator.onLine
   ) {
 
@@ -2081,23 +1703,13 @@ async function fullSync(
 
   }
 
-
-  fullSyncRunning =
-    true;
-
+  fullSyncRunning = true;
 
   try {
 
-    /*
-      D'abord on essaie d'envoyer ce qui est en attente.
-    */
-
     await flushPendingWrites();
 
-
-    if (
-      showStatus
-    ) {
+    if (showStatus) {
 
       setGlobalStatus(
 
@@ -2112,7 +1724,6 @@ async function fullSync(
 
     }
 
-
     const data =
       await jsonp(
 
@@ -2122,19 +1733,14 @@ async function fullSync(
         },
 
         {
-          retries:
-            2,
-
-          timeout:
-            12000
+          retries: 2,
+          timeout: 12000
         }
 
       );
 
-
     const remoteRues =
       data.rues || [];
-
 
     if (
       remoteRues.length > 0
@@ -2146,29 +1752,10 @@ async function fullSync(
 
     }
 
-
-    document
-      .getElementById(
-        'syncInfo'
-      )
-      .textContent =
-        new Date()
-          .toLocaleTimeString(
-            'fr-FR',
-            {
-              hour:
-                '2-digit',
-
-              minute:
-                '2-digit'
-            }
-          );
-
-
     setGlobalStatus(
 
       baseRues.length +
-      ' rues • GPS actif',
+      ' rues disponibles',
 
       'ok'
 
@@ -2182,12 +1769,6 @@ async function fullSync(
       'Synchronisation Google impossible',
       err
     );
-
-
-    /*
-      Pas de gros message d'erreur.
-      L'application continue avec sa base locale.
-    */
 
     if (
       baseRues.length
@@ -2207,11 +1788,8 @@ async function fullSync(
     else {
 
       setGlobalStatus(
-
         'Connexion Google indisponible',
-
         'error'
-
       );
 
     }
@@ -2220,23 +1798,20 @@ async function fullSync(
 
   finally {
 
-    fullSyncRunning =
-      false;
+    fullSyncRunning = false;
 
   }
-
 }
 
 
 /* ==========================================================
-   DÉMARRAGE BASE
+   CHARGEMENT INITIAL
 ========================================================== */
 
 async function loadBase() {
 
   const hasCache =
     loadBaseCache();
-
 
   if (
     hasCache
@@ -2245,14 +1820,11 @@ async function loadBase() {
     setGlobalStatus(
 
       baseRues.length +
-      ' rues • GPS actif',
+      ' rues disponibles',
 
       'ok'
 
     );
-
-
-    startGPS();
 
   }
 
@@ -2265,25 +1837,9 @@ async function loadBase() {
 
   }
 
-
-  /*
-    La synchronisation Google démarre en arrière-plan.
-  */
-
   await fullSync(
     !hasCache
   );
-
-
-  if (
-    gpsWatchId === null &&
-    baseRues.length
-  ) {
-
-    startGPS();
-
-  }
-
 
   startPeriodicSync();
 
@@ -2291,7 +1847,7 @@ async function loadBase() {
 
 
 /* ==========================================================
-   SYNCHRO TOUTES LES 5 MIN
+   SYNCHRONISATION PÉRIODIQUE
 ========================================================== */
 
 function startPeriodicSync() {
@@ -2305,7 +1861,6 @@ function startPeriodicSync() {
     );
 
   }
-
 
   syncTimer =
     setInterval(
@@ -2323,1026 +1878,181 @@ function startPeriodicSync() {
 
 
 /* ==========================================================
-   GPS
+   RECHERCHE MANUELLE
 ========================================================== */
 
-function startGPS() {
+function searchStreet() {
 
-  if (
-    gpsWatchId !== null
-  ) {
-
-    return;
-
-  }
-
-
-  if (
-    !navigator.geolocation
-  ) {
-
-    setGlobalStatus(
-      'GPS indisponible',
-      'error'
+  const input =
+    document.getElementById(
+      'searchInput'
     );
 
-    return;
-
-  }
-
-
-  gpsWatchId =
-    navigator
-      .geolocation
-      .watchPosition(
-
-        onPosition,
-
-        onGpsError,
-
-        {
-
-          enableHighAccuracy:
-            true,
-
-          maximumAge:
-            2500,
-
-          timeout:
-            15000
-
-        }
-
-      );
-
-}
-
-
-/* ==========================================================
-   NOUVELLE POSITION
-========================================================== */
-
-function onPosition(
-  position
-) {
-
-  const lat =
-    position
-      .coords
-      .latitude;
-
-
-  const lng =
-    position
-      .coords
-      .longitude;
-
-
-  const accuracy =
-    position
-      .coords
-      .accuracy;
-
-
-  lastGpsLat =
-    lat;
-
-
-  lastGpsLng =
-    lng;
-
-
-  document
-    .getElementById(
-      'lat'
-    )
-    .textContent =
-      lat.toFixed(
-        6
-      );
-
-
-  document
-    .getElementById(
-      'lng'
-    )
-    .textContent =
-      lng.toFixed(
-        6
-      );
-
-
-  document
-    .getElementById(
-      'accuracy'
-    )
-    .textContent =
-      '± ' +
-      Math.round(
-        accuracy
-      ) +
-      ' m';
-
-
-  if (
-    manualMode
-  ) {
-
-    return;
-
-  }
-
-
-  scheduleGeocode(
-    false
-  );
-
-}
-
-
-/* ==========================================================
-   ERREUR GPS
-========================================================== */
-
-function onGpsError(
-  error
-) {
-
-  let message =
-    'Erreur GPS';
-
-
-  if (
-    error.code === 1
-  ) {
-
-    message =
-      'Autorisation GPS refusée';
-
-  }
-
-  else if (
-    error.code === 2
-  ) {
-
-    message =
-      'Position GPS indisponible';
-
-  }
-
-  else if (
-    error.code === 3
-  ) {
-
-    message =
-      'Recherche GPS…';
-
-  }
-
-
-  setGlobalStatus(
-
-    message,
-
-    error.code === 3
-      ? 'wait'
-      : 'error'
-
-  );
-
-}
-
-
-/* ==========================================================
-   PLANIFICATION GÉOCODAGE
-========================================================== */
-
-function scheduleGeocode(
-  force = false
-) {
-
-  if (
-    manualMode
-  ) {
-
-    return;
-
-  }
-
-
-  if (
-    lastGpsLat === null ||
-    lastGpsLng === null
-  ) {
-
-    return;
-
-  }
-
-
-  const now =
-    Date.now();
-
-
-  /*
-    IMPORTANT :
-    même si l'utilisateur roule vite,
-    aucune requête normale ne part avant
-    GEOCODE_INTERVAL.
-  */
-
-  if (
-    !force &&
-    now -
-    lastGeocodeAttemptTime <
-    GEOCODE_INTERVAL
-  ) {
-
-    return;
-
-  }
-
-
-  let movedEnough =
-    true;
-
-
-  if (
-    lastGeocodeLat !== null &&
-    lastGeocodeLng !== null
-  ) {
-
-    const moved =
-      distanceMeters(
-
-        lastGeocodeLat,
-        lastGeocodeLng,
-
-        lastGpsLat,
-        lastGpsLng
-
-      );
-
-
-    movedEnough =
-      moved >=
-      GEOCODE_MIN_DISTANCE;
-
-  }
-
-
-  const stale =
-    now -
-    lastGeocodeSuccessTime >=
-    GEOCODE_STALE_INTERVAL;
-
-
-  if (
-    !force &&
-    !movedEnough &&
-    !stale
-  ) {
-
-    return;
-
-  }
-
-
-  if (
-    geocodeRunning
-  ) {
-
-    geocodePending =
-      true;
-
-    return;
-
-  }
-
-
-  runGeocode(
-
-    lastGpsLat,
-
-    lastGpsLng,
-
-    false
-
-  );
-
-}
-
-
-/* ==========================================================
-   DISTANCE
-========================================================== */
-
-function distanceMeters(
-  lat1,
-  lon1,
-  lat2,
-  lon2
-) {
-
-  const R =
-    6371000;
-
-
-  const toRad =
-    value =>
-      value *
-      Math.PI /
-      180;
-
-
-  const dLat =
-    toRad(
-      lat2 -
-      lat1
+  const container =
+    document.getElementById(
+      'searchResults'
     );
 
-
-  const dLon =
-    toRad(
-      lon2 -
-      lon1
+  const query =
+    normalizeText(
+      input.value
     );
 
-
-  const a =
-
-    Math.sin(
-      dLat / 2
-    ) ** 2
-
-    +
-
-    Math.cos(
-      toRad(
-        lat1
-      )
-    )
-
-    *
-
-    Math.cos(
-      toRad(
-        lat2
-      )
-    )
-
-    *
-
-    Math.sin(
-      dLon / 2
-    ) ** 2;
-
-
-  return (
-
-    2 *
-    R *
-    Math.atan2(
-
-      Math.sqrt(
-        a
-      ),
-
-      Math.sqrt(
-        1 -
-        a
-      )
-
-    )
-
-  );
-
-}
-
-
-/* ==========================================================
-   NOMINATIM
-========================================================== */
-
-async function runGeocode(
-  lat,
-  lng,
-  isRetry
-) {
+  container.innerHTML = '';
 
   if (
-    geocodeRunning
+    !query
   ) {
 
-    geocodePending =
-      true;
+    container.style.display =
+      'none';
 
     return;
 
   }
 
-
-  geocodeRunning =
-    true;
-
-
-  geocodePending =
-    false;
-
-
-  lastGeocodeAttemptTime =
-    Date.now();
-
-
-  setGlobalStatus(
-
-    baseRues.length +
-    ' rues • recherche GPS…',
-
-    'wait'
-
-  );
-
-
-  let abortTimer =
-    null;
-
-
-  try {
-
-    const controller =
-      new AbortController();
-
-
-    abortTimer =
-      setTimeout(
-
-        () =>
-          controller.abort(),
-
-        8000
-
-      );
-
-
-    const url =
-
-      'https://nominatim.openstreetmap.org/reverse'
-
-      +
-
-      '?format=jsonv2'
-
-      +
-
-      '&lat=' +
-      encodeURIComponent(
-        lat
-      )
-
-      +
-
-      '&lon=' +
-      encodeURIComponent(
-        lng
-      )
-
-      +
-
-      '&zoom=18'
-
-      +
-
-      '&addressdetails=1';
-
-
-    const response =
-      await fetch(
-
-        url,
-
-        {
-
-          headers: {
-
-            'Accept-Language':
-              'fr'
-
-          },
-
-          signal:
-            controller.signal,
-
-          cache:
-            'no-store'
-
-        }
-
-      );
-
-
-    if (
-      abortTimer
-    ) {
-
-      clearTimeout(
-        abortTimer
-      );
-
-    }
-
-
-    if (
-      !response.ok
-    ) {
-
-      throw new Error(
-        'Géocodage indisponible'
-      );
-
-    }
-
-
-    const data =
-      await response.json();
-
-
-    const address =
-      data.address || {};
-
-
-    const rawStreet =
-
-      address.road
-
-      ||
-
-      address.pedestrian
-
-      ||
-
-      address.residential
-
-      ||
-
-      address.path
-
-      ||
-
-      address.neighbourhood
-
-      ||
-
-      '';
-
-
-    document
-      .getElementById(
-        'rawStreet'
-      )
-      .textContent =
-
-        rawStreet ||
-        'Non reconnue';
-
-
-    lastGeocodeSuccessTime =
-      Date.now();
-
-
-    lastGeocodeLat =
-      lat;
-
-
-    lastGeocodeLng =
-      lng;
-
-
-    setGlobalStatus(
-
-      baseRues.length +
-      ' rues • GPS actif',
-
-      'ok'
-
-    );
-
-
-    if (
-      rawStreet
-    ) {
-
-      detectStreet(
-        rawStreet
-      );
-
-    }
-
-  }
-
-  catch(err) {
-
-    if (
-      abortTimer
-    ) {
-
-      clearTimeout(
-        abortTimer
-      );
-
-    }
-
-
-    console.log(
-      'Erreur géocodage',
-      err
-    );
-
-
-    if (
-      !isRetry &&
-      !manualMode
-    ) {
-
-      clearTimeout(
-        retryTimer
-      );
-
-
-      retryTimer =
-        setTimeout(
-          () => {
-
-            if (
-              !manualMode &&
-              lastGpsLat !== null &&
-              lastGpsLng !== null
-            ) {
-
-              runGeocode(
-
-                lastGpsLat,
-
-                lastGpsLng,
-
-                true
-
-              );
-
-            }
-
-          },
-          GEOCODE_RETRY_DELAY
-        );
-
-    }
-
-    else {
-
-      setGlobalStatus(
-
-        baseRues.length +
-        ' rues • GPS actif',
-
-        'ok'
-
-      );
-
-    }
-
-  }
-
-  finally {
-
-    geocodeRunning =
-      false;
-
-
-    if (
-      geocodePending &&
-      !manualMode
-    ) {
-
-      geocodePending =
-        false;
-
-
-      setTimeout(
-        () => {
-
-          scheduleGeocode(
-            false
+  const results =
+    baseRues
+
+      .filter(
+        item => {
+
+          const rue =
+            normalizeText(
+              item.rue
+            );
+
+          return rue.includes(
+            query
           );
 
-        },
-        500
-      );
-
-    }
-
-  }
-
-}
-
-
-/* ==========================================================
-   DÉTECTION DE RUE
-========================================================== */
-
-function detectStreet(
-  rawStreet
-) {
-
-  if (
-    manualMode
-  ) {
-
-    return;
-
-  }
-
-
-  const match =
-    findBestMatch(
-      rawStreet
-    );
-
-
-  if (
-    !match
-  ) {
-
-    candidateId =
-      null;
-
-    candidateCount =
-      0;
-
-    return;
-
-  }
-
-
-  if (
-    activeEntry &&
-    String(
-      activeEntry.id
-    )
-    ===
-    String(
-      match.id
-    )
-  ) {
-
-    candidateId =
-      String(
-        match.id
-      );
-
-    candidateCount =
-      REQUIRED_CONFIRMATIONS;
-
-    return;
-
-  }
-
-
-  if (
-    String(
-      candidateId
-    )
-    ===
-    String(
-      match.id
-    )
-  ) {
-
-    candidateCount++;
-
-  }
-
-  else {
-
-    candidateId =
-      String(
-        match.id
-      );
-
-    candidateCount =
-      1;
-
-  }
-
-
-  if (
-    candidateCount >=
-    REQUIRED_CONFIRMATIONS
-  ) {
-
-    candidateCount =
-      REQUIRED_CONFIRMATIONS;
-
-
-    activateStreet(
-
-      match.id,
-
-      false
-
-    );
-
-  }
-
-}
-
-
-/* ==========================================================
-   CORRESPONDANCE NOM RUE
-========================================================== */
-
-function findBestMatch(
-  rawStreet
-) {
-
-  const raw =
-    normalizeText(
-      rawStreet
-    );
-
-
-  if (
-    !raw
-  ) {
-
-    return null;
-
-  }
-
-
-  let best =
-    null;
-
-
-  let bestScore =
-    0;
-
-
-  for (
-    const item
-    of baseRues
-  ) {
-
-    const street =
-      normalizeText(
-        item.rue
-      );
-
-
-    if (
-      !street
-    ) {
-
-      continue;
-
-    }
-
-
-    let score =
-      0;
-
-
-    if (
-      street ===
-      raw
-    ) {
-
-      score =
-        100;
-
-    }
-
-    else if (
-
-      street.includes(
-        raw
+        }
       )
 
-      ||
-
-      raw.includes(
-        street
-      )
-
-    ) {
-
-      score =
-        85;
-
-    }
-
-    else {
-
-      const rawWords =
-        raw.split(
-          ' '
-        );
-
-
-      const streetWords =
-        street.split(
-          ' '
-        );
-
-
-      const common =
-        rawWords.filter(
-
-          word =>
-            word.length >= 3
-            &&
-            streetWords.includes(
-              word
-            )
-
-        );
-
-
-      if (
-        common.length >= 2
-      ) {
-
-        score =
-          50 +
-          common.length *
-          10;
-
-      }
-
-    }
-
-
-    if (
-      score >
-      bestScore
-    ) {
-
-      bestScore =
-        score;
-
-
-      best =
-        item;
-
-    }
-
-  }
-
+      .slice(
+        0,
+        20
+      );
 
   if (
-    bestScore < 60
+    results.length === 0
   ) {
 
-    return null;
+    container.innerHTML =
+      '<div class="result">Aucune rue trouvée</div>';
+
+    container.style.display =
+      'block';
+
+    return;
 
   }
 
+  results.forEach(
+    item => {
 
-  return best;
+      const div =
+        document.createElement(
+          'div'
+        );
+
+      div.className =
+        'result';
+
+      const fait =
+        String(
+          item.fait || ''
+        ).toLowerCase() === 'oui';
+
+      div.innerHTML =
+
+        '<strong>' +
+        escapeHtml(
+          item.rue
+        ) +
+        '</strong>' +
+
+        '<small>' +
+
+        escapeHtml(
+          item.jour
+        ) +
+
+        ' • n° ' +
+
+        item.ordre +
+
+        ' • ' +
+
+        escapeHtml(
+          item.type
+        ) +
+
+        ' • ' +
+
+        item.bal +
+
+        ' BAL' +
+
+        (
+          fait
+            ? ' • FAIT'
+            : ' • À FAIRE'
+        ) +
+
+        '</small>';
+
+
+      div.onclick =
+        () => {
+
+          input.value =
+            item.rue;
+
+          container.style.display =
+            'none';
+
+          activateStreet(
+            item.id
+          );
+
+        };
+
+
+      container.appendChild(
+        div
+      );
+
+    }
+  );
+
+  container.style.display =
+    'block';
 
 }
 
 
 /* ==========================================================
    ACTIVER UNE RUE
-   100 % LOCAL
 ========================================================== */
 
 function activateStreet(
-  id,
-  fromManual
+  id
 ) {
 
   const item =
     baseRues.find(
-
       entry =>
-        String(
-          entry.id
-        )
-        ===
-        String(
-          id
-        )
-
+        String(entry.id) ===
+        String(id)
     );
-
 
   if (
     !item
   ) {
 
     setSaveStatus(
-      'Rue introuvable dans la base locale',
+      'Rue introuvable',
       'error'
     );
 
@@ -3350,24 +2060,11 @@ function activateStreet(
 
   }
 
-
   activeEntry = {
     ...item
   };
 
-
-  if (
-    fromManual
-  ) {
-
-    manualMode =
-      true;
-
-  }
-
-
   displayActiveStreet();
-
 
   setSaveStatus(
     '',
@@ -3378,7 +2075,7 @@ function activateStreet(
 
 
 /* ==========================================================
-   AFFICHAGE
+   AFFICHAGE DE LA RUE
 ========================================================== */
 
 function displayActiveStreet() {
@@ -3391,58 +2088,46 @@ function displayActiveStreet() {
 
   }
 
-
-  document
-    .getElementById(
-      'streetName'
-    )
-    .textContent =
-      activeEntry.rue;
+  document.getElementById(
+    'streetName'
+  ).textContent =
+    activeEntry.rue;
 
 
-  document
-    .getElementById(
-      'streetMeta'
-    )
-    .textContent =
+  document.getElementById(
+    'streetMeta'
+  ).textContent =
 
-      activeEntry.jour
+    activeEntry.jour +
 
-      +
+    '  •  n° ' +
 
-      '  •  n° '
+    activeEntry.ordre +
 
-      +
+    '  •  ' +
 
-      activeEntry.ordre
-
-      +
-
-      '  •  '
-
-      +
-
-      activeEntry.type;
+    activeEntry.type;
 
 
-  document
-    .getElementById(
-      'currentBal'
-    )
-    .textContent =
-      activeEntry.bal;
+  const currentBal =
+    Number(
+      activeEntry.bal
+    ) || 0;
+
+
+  document.getElementById(
+    'currentBal'
+  ).textContent =
+    currentBal;
 
 
   const input =
-    document
-      .getElementById(
-        'balInput'
-      );
-
+    document.getElementById(
+      'balInput'
+    );
 
   input.disabled =
     false;
-
 
   if (
     document.activeElement !==
@@ -3450,37 +2135,31 @@ function displayActiveStreet() {
   ) {
 
     input.value =
-      activeEntry.bal;
+      currentBal;
 
   }
 
 
-  document
-    .getElementById(
-      'saveButton'
-    )
-    .disabled =
-      false;
+  document.getElementById(
+    'saveButton'
+  ).disabled =
+    false;
 
 
   const fait =
     String(
-      activeEntry.fait ||
-      ''
-    )
-    .toLowerCase();
+      activeEntry.fait || ''
+    ).toLowerCase();
 
 
   const tag =
-    document
-      .getElementById(
-        'faitTag'
-      );
+    document.getElementById(
+      'faitTag'
+    );
 
 
   if (
-    fait ===
-    'oui'
+    fait === 'oui'
   ) {
 
     tag.innerHTML =
@@ -3499,8 +2178,7 @@ function displayActiveStreet() {
 
 
 /* ==========================================================
-   ENREGISTREMENT BAL
-   LOCAL IMMÉDIAT + GOOGLE EN ARRIÈRE-PLAN
+   ENREGISTRER LES BAL
 ========================================================== */
 
 async function saveBAL() {
@@ -3514,30 +2192,20 @@ async function saveBAL() {
 
   }
 
-
   const input =
-    document
-      .getElementById(
-        'balInput'
-      );
-
+    document.getElementById(
+      'balInput'
+    );
 
   const bal =
     Number(
       input.value
     );
 
-
   if (
-    !Number.isFinite(
-      bal
-    )
-    ||
-    bal < 0
-    ||
-    !Number.isInteger(
-      bal
-    )
+    !Number.isFinite(bal) ||
+    bal < 0 ||
+    !Number.isInteger(bal)
   ) {
 
     setSaveStatus(
@@ -3549,22 +2217,16 @@ async function saveBAL() {
 
   }
 
+  saving = true;
 
-  saving =
+  document.getElementById(
+    'saveButton'
+  ).disabled =
     true;
-
-
-  document
-    .getElementById(
-      'saveButton'
-    )
-    .disabled =
-      true;
 
 
   const currentId =
     activeEntry.id;
-
 
   const previousBal =
     Number(
@@ -3572,39 +2234,30 @@ async function saveBAL() {
     ) || 0;
 
 
-  /*
-    1.
-    Mise à jour locale IMMÉDIATE.
-  */
-
   const fait =
     bal > 0
       ? 'Oui'
       : activeEntry.fait;
 
 
+  /*
+    Mise à jour immédiate sur le téléphone.
+  */
+
   updateLocalStreet(
-
     currentId,
-
     bal,
-
     fait
-
   );
 
 
   /*
-    Historique du jour :
-    on comptabilise uniquement la différence.
+    Mise à jour du compteur du jour.
   */
 
   registerDailyActivity(
-
     previousBal,
-
     bal
-
   );
 
 
@@ -3612,16 +2265,12 @@ async function saveBAL() {
 
 
   /*
-    2.
-    Stockage de l'écriture dans la file locale.
+    Mise en attente pour Google Sheets.
   */
 
   queueBALWrite(
-
     currentId,
-
     bal
-
   );
 
 
@@ -3639,22 +2288,16 @@ async function saveBAL() {
   );
 
 
-  saving =
+  saving = false;
+
+  document.getElementById(
+    'saveButton'
+  ).disabled =
     false;
 
 
-  document
-    .getElementById(
-      'saveButton'
-    )
-    .disabled =
-      false;
-
-
   /*
-    3.
-    Google est contacté en arrière-plan.
-    L'utilisateur n'attend pas.
+    Synchronisation Google en arrière-plan.
   */
 
   flushPendingWrites()
@@ -3673,302 +2316,11 @@ async function saveBAL() {
 
 
 /* ==========================================================
-   RECHERCHE MANUELLE
-========================================================== */
-
-function searchStreet() {
-
-  const input =
-    document
-      .getElementById(
-        'searchInput'
-      );
-
-
-  const container =
-    document
-      .getElementById(
-        'searchResults'
-      );
-
-
-  const query =
-    normalizeText(
-      input.value
-    );
-
-
-  container.innerHTML =
-    '';
-
-
-  if (
-    !query
-  ) {
-
-    container.style.display =
-      'none';
-
-    return;
-
-  }
-
-
-  const results =
-    baseRues
-
-      .filter(
-        item => {
-
-          const rue =
-            normalizeText(
-              item.rue
-            );
-
-
-          return rue.includes(
-            query
-          );
-
-        }
-      )
-
-      .slice(
-        0,
-        20
-      );
-
-
-  if (
-    results.length === 0
-  ) {
-
-    container.innerHTML =
-      '<div class="result">Aucune rue trouvée</div>';
-
-
-    container.style.display =
-      'block';
-
-
-    return;
-
-  }
-
-
-  results.forEach(
-    item => {
-
-
-      const div =
-        document
-          .createElement(
-            'div'
-          );
-
-
-      div.className =
-        'result';
-
-
-      div.innerHTML =
-
-        '<strong>'
-
-        +
-
-        escapeHtml(
-          item.rue
-        )
-
-        +
-
-        '</strong>'
-
-        +
-
-        '<small>'
-
-        +
-
-        escapeHtml(
-          item.jour
-        )
-
-        +
-
-        ' • n° '
-
-        +
-
-        item.ordre
-
-        +
-
-        ' • '
-
-        +
-
-        escapeHtml(
-          item.type
-        )
-
-        +
-
-        ' • '
-
-        +
-
-        item.bal
-
-        +
-
-        ' BAL'
-
-        +
-
-        '</small>';
-
-
-      div.onclick =
-        () => {
-
-
-          document
-            .getElementById(
-              'searchInput'
-            )
-            .value =
-              item.rue;
-
-
-          container.style.display =
-            'none';
-
-
-          candidateId =
-            null;
-
-
-          candidateCount =
-            0;
-
-
-          activateStreet(
-
-            item.id,
-
-            true
-
-          );
-
-        };
-
-
-      container
-        .appendChild(
-          div
-        );
-
-    }
-  );
-
-
-  container.style.display =
-    'block';
-
-}
-
-
-/* ==========================================================
-   RETOUR GPS
-========================================================== */
-
-function clearManualSelection() {
-
-  manualMode =
-    false;
-
-
-  candidateId =
-    null;
-
-
-  candidateCount =
-    0;
-
-
-  clearTimeout(
-    retryTimer
-  );
-
-
-  document
-    .getElementById(
-      'searchInput'
-    )
-    .value =
-      '';
-
-
-  document
-    .getElementById(
-      'searchResults'
-    )
-    .style
-    .display =
-      'none';
-
-
-  setGlobalStatus(
-
-    baseRues.length +
-    ' rues • recherche GPS…',
-
-    'wait'
-
-  );
-
-
-  lastGeocodeAttemptTime =
-    0;
-
-
-  if (
-    lastGpsLat !== null &&
-    lastGpsLng !== null
-  ) {
-
-    scheduleGeocode(
-      true
-    );
-
-  }
-
-  else {
-
-    setGlobalStatus(
-
-      baseRues.length +
-      ' rues • attente GPS…',
-
-      'wait'
-
-    );
-
-  }
-
-}
-
-
-/* ==========================================================
-   RETOUR PREMIER PLAN
+   RETOUR SUR LE SITE
 ========================================================== */
 
 document.addEventListener(
-
   'visibilitychange',
-
   () => {
 
     if (
@@ -3980,27 +2332,9 @@ document.addEventListener(
         false
       );
 
-
-      if (
-        !manualMode &&
-        lastGpsLat !== null &&
-        lastGpsLng !== null
-      ) {
-
-        lastGeocodeAttemptTime =
-          0;
-
-
-        scheduleGeocode(
-          true
-        );
-
-      }
-
     }
 
   }
-
 );
 
 
@@ -4009,9 +2343,7 @@ document.addEventListener(
 ========================================================== */
 
 window.addEventListener(
-
   'online',
-
   () => {
 
     fullSync(
@@ -4019,7 +2351,40 @@ window.addEventListener(
     );
 
   }
+);
 
+
+/* ==========================================================
+   FERMER LES RÉSULTATS SI ON CLIQUE AILLEURS
+========================================================== */
+
+document.addEventListener(
+  'click',
+  event => {
+
+    const searchInput =
+      document.getElementById(
+        'searchInput'
+      );
+
+    const searchResults =
+      document.getElementById(
+        'searchResults'
+      );
+
+    if (
+      event.target !== searchInput &&
+      !searchResults.contains(
+        event.target
+      )
+    ) {
+
+      searchResults.style.display =
+        'none';
+
+    }
+
+  }
 );
 
 
@@ -4071,22 +2436,17 @@ function setGlobalStatus(
 ) {
 
   const textElement =
-    document
-      .getElementById(
-        'globalStatus'
-      );
-
+    document.getElementById(
+      'globalStatus'
+    );
 
   const box =
-    document
-      .getElementById(
-        'connection'
-      );
-
+    document.getElementById(
+      'connection'
+    );
 
   textElement.textContent =
     text;
-
 
   box.className =
     'connection ' +
@@ -4105,15 +2465,12 @@ function setSaveStatus(
 ) {
 
   const element =
-    document
-      .getElementById(
-        'saveStatus'
-      );
-
+    document.getElementById(
+      'saveStatus'
+    );
 
   element.textContent =
     text;
-
 
   element.className =
     'status ' +
@@ -4123,7 +2480,7 @@ function setSaveStatus(
 
 
 /* ==========================================================
-   HISTORIQUE BAL LOCAL
+   HISTORIQUE LOCAL
 ========================================================== */
 
 function getLocalDateKey(
@@ -4133,26 +2490,21 @@ function getLocalDateKey(
   const year =
     date.getFullYear();
 
-
   const month =
     String(
       date.getMonth() + 1
-    )
-    .padStart(
+    ).padStart(
       2,
       '0'
     );
-
 
   const day =
     String(
       date.getDate()
-    )
-    .padStart(
+    ).padStart(
       2,
       '0'
     );
-
 
   return (
     year +
@@ -4165,10 +2517,6 @@ function getLocalDateKey(
 }
 
 
-/* ==========================================================
-   LIRE L'HISTORIQUE
-========================================================== */
-
 function getDailyHistory() {
 
   try {
@@ -4178,7 +2526,6 @@ function getDailyHistory() {
         DAILY_HISTORY_KEY
       );
 
-
     if (
       !raw
     ) {
@@ -4187,12 +2534,10 @@ function getDailyHistory() {
 
     }
 
-
     const data =
       JSON.parse(
         raw
       );
-
 
     if (
       !data ||
@@ -4203,7 +2548,6 @@ function getDailyHistory() {
       return {};
 
     }
-
 
     return data;
 
@@ -4217,10 +2561,6 @@ function getDailyHistory() {
 
 }
 
-
-/* ==========================================================
-   SAUVEGARDER L'HISTORIQUE
-========================================================== */
 
 function saveDailyHistory(
   history
@@ -4253,7 +2593,7 @@ function saveDailyHistory(
 
 
 /* ==========================================================
-   AJOUTER AU COMPTEUR DU JOUR
+   COMPTEUR DU JOUR
 ========================================================== */
 
 function registerDailyActivity(
@@ -4265,7 +2605,6 @@ function registerDailyActivity(
     Number(newBal) -
     Number(oldBal);
 
-
   if (
     difference === 0
   ) {
@@ -4274,108 +2613,69 @@ function registerDailyActivity(
 
   }
 
-
   const history =
     getDailyHistory();
-
 
   const today =
     getLocalDateKey();
 
-
   if (
-    history[
-      today
-    ] === undefined
+    history[today] ===
+    undefined
   ) {
 
-    history[
-      today
-    ] = 0;
+    history[today] = 0;
 
   }
 
-
-  history[
-    today
-  ] =
-
+  history[today] =
     Number(
-      history[
-        today
-      ] || 0
-    )
-
-    +
-
+      history[today] || 0
+    ) +
     difference;
 
 
-  /*
-    On empêche le compteur journalier
-    de devenir négatif après une correction.
-  */
-
   if (
-    history[
-      today
-    ] < 0
+    history[today] < 0
   ) {
 
-    history[
-      today
-    ] = 0;
+    history[today] = 0;
 
   }
-
 
   saveDailyHistory(
     history
   );
-
 
   refreshTodayBal();
 
 }
 
 
-/* ==========================================================
-   RAFRAÎCHIR LE COMPTEUR DU JOUR
-========================================================== */
-
 function refreshTodayBal() {
 
   const history =
     getDailyHistory();
 
-
   const today =
     getLocalDateKey();
 
-
   const value =
     Number(
-      history[
-        today
-      ] || 0
+      history[today] || 0
     );
 
-
   const element =
-    document
-      .getElementById(
-        'todayBal'
-      );
-
+    document.getElementById(
+      'todayBal'
+    );
 
   if (
     element
   ) {
 
     element.innerHTML =
-
       value +
-
       ' <span>BAL</span>';
 
   }
@@ -4384,22 +2684,17 @@ function refreshTodayBal() {
 
 
 /* ==========================================================
-   OUVRIR L'HISTORIQUE
+   HISTORIQUE
 ========================================================== */
 
 function openHistory() {
 
   renderHistory();
 
-
-  document
-    .getElementById(
-      'historyOverlay'
-    )
-    .style
-    .display =
-      'flex';
-
+  document.getElementById(
+    'historyOverlay'
+  ).style.display =
+    'flex';
 
   document.body.style.overflow =
     'hidden';
@@ -4407,20 +2702,12 @@ function openHistory() {
 }
 
 
-/* ==========================================================
-   FERMER L'HISTORIQUE
-========================================================== */
-
 function closeHistory() {
 
-  document
-    .getElementById(
-      'historyOverlay'
-    )
-    .style
-    .display =
-      'none';
-
+  document.getElementById(
+    'historyOverlay'
+  ).style.display =
+    'none';
 
   document.body.style.overflow =
     '';
@@ -4444,94 +2731,64 @@ function closeHistoryFromOverlay(
 }
 
 
-/* ==========================================================
-   AFFICHER L'HISTORIQUE
-========================================================== */
-
 function renderHistory() {
 
   const history =
     getDailyHistory();
 
-
   const container =
-    document
-      .getElementById(
-        'historyList'
-      );
+    document.getElementById(
+      'historyList'
+    );
 
-
-  container.innerHTML =
-    '';
-
+  container.innerHTML = '';
 
   const dates =
     Object.keys(
       history
     )
-
     .sort(
-      (
-        a,
-        b
-      ) =>
-        b.localeCompare(
-          a
-        )
+      (a, b) =>
+        b.localeCompare(a)
     );
-
 
   if (
     dates.length === 0
   ) {
 
     container.innerHTML =
-
       '<div class="history-empty">' +
-
       'Aucun historique pour le moment.' +
-
       '</div>';
-
 
     return;
 
   }
 
-
   dates.forEach(
     dateKey => {
-
 
       const parts =
         dateKey.split(
           '-'
         );
 
-
       const date =
         new Date(
 
           Number(
-            parts[
-              0
-            ]
+            parts[0]
           ),
 
           Number(
-            parts[
-              1
-            ]
+            parts[1]
           ) - 1,
 
           Number(
-            parts[
-              2
-            ]
+            parts[2]
           )
 
         );
-
 
       const label =
         date.toLocaleDateString(
@@ -4556,7 +2813,6 @@ function renderHistory() {
 
         );
 
-
       const value =
         Number(
           history[
@@ -4564,17 +2820,13 @@ function renderHistory() {
           ] || 0
         );
 
-
       const row =
-        document
-          .createElement(
-            'div'
-          );
-
+        document.createElement(
+          'div'
+        );
 
       row.className =
         'history-row';
-
 
       row.innerHTML =
 
@@ -4582,9 +2834,7 @@ function renderHistory() {
 
         escapeHtml(
           label
-        )
-
-        +
+        ) +
 
         '</div>' +
 
@@ -4596,14 +2846,11 @@ function renderHistory() {
 
         '</div>';
 
-
-      container
-        .appendChild(
-          row
-        );
+      container.appendChild(
+        row
+      );
 
     }
-
   );
 
 }
@@ -4614,7 +2861,6 @@ function renderHistory() {
 ========================================================== */
 
 refreshTodayBal();
-
 loadBase();
 
 </script>
